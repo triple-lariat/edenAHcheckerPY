@@ -5,6 +5,9 @@ from datetime import datetime
 import json, ast, re, pytz
 import edenAHhelper as helper
 
+# import bot token from separate file 'token.py'
+from eden_bot_token import eden_bot_token
+
 description = ''
 bot = commands.Bot(command_prefix='!', description=description)
 
@@ -61,4 +64,4 @@ async def b(ctx, *, message:str):
 
         await ctx.send(embed=helper.build_bazaar_embed(item_name, page_exist))
 
-bot.run('NzI1MDQzNjYwNTI5NDY3NDg2.XvJAQw.I4qtWBshjPtS0kdatValV5rUk3M')
+bot.run(eden_bot_token)
