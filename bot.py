@@ -2,10 +2,10 @@ import discord
 from discord.ext import commands
 import requests as r
 from datetime import datetime
-import json, ast, re, pytz
+import json, ast, pytz
 import edenAHhelper as helper
 
-# import bot token from separate file 'token.py'
+# import bot token from separate file 'eden_bot_token.py'
 try:
         from eden_bot_token import eden_bot_token
 except ImportError:
