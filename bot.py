@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import requests as r
 from datetime import datetime
-import json, ast, pytz
+import json, ast, pytz, platform
 import edenAHhelper as helper
 
 # import bot token from separate file 'eden_bot_token.py'
@@ -21,8 +21,8 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(activity=discord.Activity(name='pi bake!',
-                                                        type=discord.ActivityType.watching))
+    await bot.change_presence(activity=discord.Activity(name=platform.system(),
+                                                        type=discord.ActivityType.playing))
 
 @bot.command()
 async def add(ctx, left: int, right: int):
@@ -57,7 +57,7 @@ async def ah(ctx, *, message:str):
         
         await ctx.send(embed=helper.build_AH_embed(item_name, page_exist, stack_flag))
 
-@bot.command()
+@bot.command(aliases =['bazaar'])
 async def b(ctx, *, message:str):
         # split the arguments given with command into an array
         message = message.split(' ')
