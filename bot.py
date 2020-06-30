@@ -6,7 +6,11 @@ import json, ast, re, pytz
 import edenAHhelper as helper
 
 # import bot token from separate file 'token.py'
-from eden_bot_token import eden_bot_token
+try:
+        from eden_bot_token import eden_bot_token
+except ImportError:
+        raise ImportError('You must create a file "eden_bot_token.py" with' +
+                          ' variable eden_bot_token = "your.bot.token"')
 
 description = ''
 bot = commands.Bot(command_prefix='!', description=description)
