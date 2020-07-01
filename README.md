@@ -6,4 +6,5 @@ datetime,
 json,
 ast,
 re,
-pytz
+pytz,
+pandas
