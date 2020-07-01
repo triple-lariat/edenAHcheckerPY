@@ -3,7 +3,6 @@ from discord.ext import commands
 import requests as r
 import pandas as pd
 from datetime import datetime
-from collections import Counter
 import json, ast, re, pytz
 
 def check_item(item_name):
