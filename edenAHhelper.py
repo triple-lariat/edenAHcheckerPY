@@ -1,7 +1,9 @@
 import discord
 from discord.ext import commands
 import requests as r
+import pandas as pd
 from datetime import datetime
+from collections import Counter
 import json, ast, re, pytz
 
 def check_item(item_name):
@@ -37,12 +39,35 @@ def build_bazaar_embed(item_name, exist_flag):
         url = f'http://www.classicffxi.com/api/v1/items/{item_name}/bazaar'
         ah_info = r.get(url).text
         ah_info = ast.literal_eval(ah_info)
+        b_info = []
         embed = discord.Embed(title=embed_title, description='', color=0x00dd00)
         for entry in ah_info:
-                embed.add_field(name=entry['charname'],
-                                value=f"\n**{entry['bazaar']}g**",
-                                inline=True)
+            if not (entry['bazaar'] == 99999999):
+                b_info.append([entry['charname'],entry['bazaar']])
+
+        b_info = condense(b_info)
+
+        for entry in b_info:
+            embed.add_field(name=entry[0],
+                            value=f"\n**{entry[1]}g** x{entry[2]}",
+                            inline=True)
         return embed
+
+def condense(info_list):
+    df = pd.DataFrame(info_list)
+    # gets number of entries 
+    dupes = pd.DataFrame(info_list, columns= ['0', '1'])
+    dupes = dupes.pivot_table(index=['0','1'], aggfunc='size')
+    dupes = dupes.tolist()
+
+    # gets rid of duplicate entries
+    df = df.drop_duplicates()
+    df = df.values.tolist()
+
+    # adds number of occurences to list
+    for i in range(len(df)):
+        df[i].append(dupes[i])
+    return df
 
 def get_ET_timestamp(unix_ts):
     tz = pytz.timezone('America/New_York')
