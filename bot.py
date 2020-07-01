@@ -25,9 +25,25 @@ async def on_ready():
                                                         type=discord.ActivityType.playing))
 
 @bot.command()
-async def add(ctx, left: int, right: int):
-    """Adds two numbers together."""
-    await ctx.send(left + right)
+async def getid(ctx, *, message:str):
+        '''Get the item ID and homepointxi link for any item
+                (filtered out some OOE items)'''
+        message = message.split(' ')
+        separator = '_'
+        item_name = separator.join(message)
+        csv = open('item_names_and_ids.csv', 'r')
+        item_info = []
+        for line in csv:
+                item_info.append(line.split(','))
+        i = 0
+        try:
+                while not (item_info[i][1].rstrip() == item_name):
+                        i += 1
+                await ctx.channel.send(item_info[i])
+                await ctx.channel.send(f'http://homepointxi.com/db/items/{item_info[i][0]}/{item_name}')
+        except IndexError:
+                await ctx.channel.send('No item found')
+        csv.close()
 
 @bot.command()
 async def ping(ctx):
