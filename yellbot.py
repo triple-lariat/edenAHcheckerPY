@@ -26,8 +26,13 @@ class MyClient(discord.Client):
 
     async def my_background_task(self):
         await self.wait_until_ready()
+        # togglable var for logging yells sent
+        log_yells = True
         counter = 0
         yell_history = [{} for i in range(31)]
+
+        if log_yells:
+            log = open('eden_yell_log.txt','a')
         channel = self.get_channel(727691425688453150) # channel ID goes here
         while not self.is_closed():
             #print(f"[{helper.get_my_timestamp_now()}] cycle started")
@@ -38,7 +43,10 @@ class MyClient(discord.Client):
                 name = f_yell['speaker']
                 message = f_yell['message']
                 date = f_yell['date']
-                await channel.send(f'[{date}] **{name}**: {message}')
+                yell_message = f'[{date}] **{name}**: {message}'
+                if log_yells:
+                    log.write(yell_message)
+                await channel.send(yell_message)
             counter += 1
             print('cycle ' + counter +  ' complete')
             await asyncio.sleep(30) # task runs every 30 seconds
