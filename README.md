@@ -7,5 +7,5 @@ json,
 ast,
 re,
 pytz,
-pandas</b></b>
+pandas<br><br>
 In order to use this bot you MUST create your own eden_bot_token.py with a variable of the same name containing your bot's token.
