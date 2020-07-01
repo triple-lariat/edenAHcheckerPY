@@ -26,6 +26,7 @@ class MyClient(discord.Client):
 
     async def my_background_task(self):
         await self.wait_until_ready()
+        counter = 0
         yell_history = [{} for i in range(31)]
         channel = self.get_channel(727691425688453150) # channel ID goes here
         while not self.is_closed():
@@ -38,7 +39,8 @@ class MyClient(discord.Client):
                 message = f_yell['message']
                 date = f_yell['date']
                 await channel.send(f'[{date}] **{name}**: {message}')
-            print('cycle complete')
+            counter += 1
+            print('cycle ' + counter +  ' complete')
             await asyncio.sleep(30) # task runs every 30 seconds
 
 
