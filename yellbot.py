@@ -31,11 +31,11 @@ class MyClient(discord.Client):
         counter = 0
         yell_history = [{} for i in range(31)]
 
-        if log_yells:
-            log = open('eden_yell_log.txt','a')
         channel = self.get_channel(727691425688453150) # channel ID goes here
         while not self.is_closed():
             #print(f"[{helper.get_my_timestamp_now()}] cycle started")
+            if log_yells:
+                log = open('eden_yell_log.txt','a')
             yell_tuple = helper.yell_helper(yell_history)
             yell_history = yell_tuple[1]
             for yell in yell_tuple[0]:
@@ -45,10 +45,11 @@ class MyClient(discord.Client):
                 date = f_yell['date']
                 yell_message = f'[{date}] **{name}**: {message}'
                 if log_yells:
-                    log.write(yell_message)
+                    log.write(yell_message + '\n')
                 await channel.send(yell_message)
             counter += 1
-            print('cycle ' + counter +  ' complete')
+            print('cycle ' + f'{counter}' +  ' complete')
+            log.close()
             await asyncio.sleep(30) # task runs every 30 seconds
 
 
