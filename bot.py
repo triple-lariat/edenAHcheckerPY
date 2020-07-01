@@ -41,6 +41,8 @@ async def args(ctx, *, message:str):
 
 @bot.command()
 async def ah(ctx, *, message:str):
+        '''Gets the AH entries for an item from the website.
+            Usage: !ah [item name] [y for stack]'''
         # split the arguments given with command into an array
         message = message.split(' ')
         separator = '_'
@@ -59,6 +61,10 @@ async def ah(ctx, *, message:str):
 
 @bot.command(aliases =['bazaar'])
 async def b(ctx, *, message:str):
+        '''Gets the bazaar entries for an item. May take a while...
+           Usage: !b [item name]
+           Note: the "x2" or other number beside an entry shows how many
+           individual item slots, not the actual amount.'''
         # split the arguments given with command into an array
         message = message.split(' ')
         separator = '_'
