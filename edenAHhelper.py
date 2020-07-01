@@ -8,11 +8,14 @@ import json, ast, re, pytz
 def check_item(item_name):
     check_url = f'http://www.classicffxi.com/api/v1/items/{item_name}'
     check_page = r.get(check_url).text
+    print(check_page)
     if check_page == '':
             page_exist = False
+            is_stackable = 'false'
     else:
             page_exist = True
-    return page_exist
+            is_stackable = check_page.split(',')[1][11:]
+    return (page_exist, is_stackable)
 
 def build_AH_embed(item_name, exist_flag, stack_flag):
         embed_title = format_name(item_name)

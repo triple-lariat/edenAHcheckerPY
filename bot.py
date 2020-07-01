@@ -56,8 +56,9 @@ async def ah(ctx, *, message:str):
 
         # check if the item given actually exists
         page_exist = helper.check_item(item_name)
+        stack_flag = page_exist[1]
         
-        await ctx.send(embed=helper.build_AH_embed(item_name, page_exist, stack_flag))
+        await ctx.send(embed=helper.build_AH_embed(item_name, page_exist[0], stack_flag))
 
 @bot.command(aliases =['bazaar'])
 async def b(ctx, *, message:str):
