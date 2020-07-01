@@ -52,6 +52,37 @@ def build_bazaar_embed(item_name, exist_flag):
                             inline=True)
         return embed
 
+def build_yell_embed():
+    url = 'http://classicffxi.com/api/v1/misc/yells'
+    yell_info = r.get(url).text
+    yell_info = ast.literal_eval(yell_info)
+
+    embed = discord.Embed(title='yells')
+    for entry in yell_info:
+        embed.add_field(name='placeholder',value=entry)
+    print(len(yell_info))
+    return embed
+
+# for use with yellbot.py
+def yell_helper(yell_history):
+    url = 'http://classicffxi.com/api/v1/misc/yells'
+    yell_info = r.get(url).text
+    yell_info = ast.literal_eval(yell_info)
+
+    displace = -1
+    for yell in enumerate(yell_info):
+        if yell[1] == yell_history[0]:
+            displace = yell[0]
+
+    if displace == -1:
+        return (list(reversed(yell_info)), yell_info)
+    return (list(reversed(yell_info[:displace])), yell_info)
+
+def yell_formatter(yell):
+    formatted = yell.copy()
+    formatted['date'] = get_ET_timestamp(yell['date']/1000)
+    return formatted
+
 def condense(info_list):
     df = pd.DataFrame(info_list)
     # gets number of entries 
@@ -72,6 +103,11 @@ def get_ET_timestamp(unix_ts):
     tz = pytz.timezone('America/New_York')
     ET_time = datetime.fromtimestamp(unix_ts, tz)
     return ET_time.strftime('%Y-%m-%d %H:%M:%S')
+
+def get_my_timestamp_now():
+    now = datetime.now()
+    now = now.strftime( "%H:%M:%S")
+    return now
 
 def format_name(item_name):
     return item_name.replace('_',' ').title()
