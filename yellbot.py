@@ -30,12 +30,20 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
         if message.content.startswith('!yells on'):
-            helper.add_yell_channel(message.channel.id)
-            await message.channel.send('Yell messages will be sent to this channel.')
+            if message.author.permissions_in(message.channel).manage_messages:
+                helper.add_yell_channel(message.channel.id)
+                await message.channel.send('Yell messages will be sent to this channel.')
+            else:
+                await message.channel.send(f'{message.author.mention}' +
+                                           ' you must have "manage messages" permissions to use this command!')
             return
         if message.content.startswith('!yells off'):
-            helper.del_yell_channel(message.channel.id)
-            await message.channel.send('Yell messages have been disabled for this channel.')
+            if message.author.permissions_in(message.channel).manage_messages:
+                helper.del_yell_channel(message.channel.id)
+                await message.channel.send('Yell messages have been disabled for this channel.')
+            else:
+                await message.channel.send(f'{message.author.mention}' +
+                                           ' you must have "manage messages" permissions to use this command!')
             return
 
     async def my_background_task(self):
