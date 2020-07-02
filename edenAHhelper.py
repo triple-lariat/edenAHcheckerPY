@@ -172,6 +172,13 @@ def del_yell_channel(channel_id):
 
 # check if yell channels is empty
 def check_channels_exist():
-    if get_yell_channels == []:
+    try:
+        existent = get_yell_channels()
+    except FileNotFoundError:
+        create_yell_channels = open('yell_channels.csv', 'w')
+        create_yell_channels.close()
+        existent = []
+
+    if not existent:
         return False
     return True
