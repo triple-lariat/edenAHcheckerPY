@@ -114,3 +114,35 @@ def get_my_timestamp_now():
 
 def format_name(item_name):
     return item_name.replace('_',' ').title()
+
+def get_yell_channels():
+    ch_list = open('yell_channels.csv', 'r')
+    channel_ids = []
+    for ch_id in ch_list:
+        channel_ids.append(int(ch_id.rstrip()))
+
+    ch_list.close() 
+    return channel_ids
+
+def add_yell_channel(channel_id):
+    ch_list = open('yell_channels.csv', 'r+')
+    id_exists = False
+    for ch_id in ch_list:
+        if ch_id.rstrip() == f'{channel_id}':
+            id_exists = True
+
+    if not id_exists:
+        ch_list.write(f'{channel_id}\n')
+
+    ch_list.close()
+
+def del_yell_channel(channel_id):
+    ch_list = open('yell_channels.csv', 'r+')
+    lines = ch_list.readlines()
+    ch_list.seek(0)
+    for i in lines:
+        if i.rstrip() != f'{channel_id}':
+            ch_list.write(i)
+    ch_list.truncate()
+    ch_list.close()
+            
