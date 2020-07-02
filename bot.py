@@ -9,8 +9,10 @@ import edenAHhelper as helper
 try:
     from eden_bot_token import eden_bot_token
 except ImportError:
-    raise ImportError('You must create a file "eden_bot_token.py" with' +
-                      ' variable eden_bot_token = "your.bot.token"')
+    new_instance = open('eden_bot_token.py', 'w')
+    new_instance.write('eden_bot_token = "YoUrBotTokEn"')
+    raise ImportError('Please enter your bot token in eden_bot_token.py' +
+                      '\nThis file has been created for you.')
 
 description = ''
 bot = commands.Bot(command_prefix='!', description=description)
@@ -109,5 +111,7 @@ async def yells(ctx):
            Usage: !yells [on|off]'''
     return
 
-
-bot.run(eden_bot_token)
+try:
+    bot.run(eden_bot_token)
+except discord.LoginFailure:
+    print('There was an error logging in. Please ensure you have the right login token set in eden_bot_token.py')
