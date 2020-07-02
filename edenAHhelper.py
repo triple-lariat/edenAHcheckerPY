@@ -33,7 +33,7 @@ def build_AH_embed(item_name, exist_flag, stack_flag):
         sell_time = get_ET_timestamp(entry['sell_date'])
         embed.add_field(name=sell_time,
                         value=entry['seller_name'] + ' -> ' +
-                              entry['buyer_name'] + f"\n**{entry['sale']}g**",
+                        entry['buyer_name'] + f"\n**{entry['sale']}g**",
                         inline=True)
     return embed
 
