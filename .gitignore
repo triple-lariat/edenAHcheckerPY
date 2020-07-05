@@ -4,8 +4,4 @@ eden_bot_token.py
 eden_yell_log.txt
 yell_channels.csv
 .idea/workspace.xml
-.idea/edenAHcheckerPY.iml
 .idea/modules.xml
-.idea/vcs.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/misc.xml
