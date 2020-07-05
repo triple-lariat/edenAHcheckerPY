@@ -1,10 +1,16 @@
 import ast
+
+import urllib.request
+
 import pytz
 from datetime import datetime
 
 import discord
 import pandas as pd
 import requests as r
+
+# constants
+yell_url = 'http://classicffxi.com/api/v1/misc/yells'
 
 
 def check_item(item_name):
@@ -16,8 +22,7 @@ def check_item(item_name):
         is_stackable = 'false'
     else:
         page_exist = True
-        is_stackable = check_page.split(',')[1][12:]
-        print(is_stackable)
+        is_stackable = check_page.split(',')[1][11:]
     return (page_exist, is_stackable)
 
 
@@ -34,7 +39,7 @@ def build_AH_embed(item_name, exist_flag, stack_flag):
         sell_time = get_ET_timestamp(entry['sell_date'])
         embed.add_field(name=sell_time,
                         value=entry['seller_name'] + ' -> ' +
-                        entry['buyer_name'] + f"\n**{entry['sale']}g**",
+                              entry['buyer_name'] + f"\n**{entry['sale']}g**",
                         inline=True)
     return embed
 
@@ -89,6 +94,18 @@ def format_name(item_name):
     return item_name.replace('_', ' ').title()
 
 
+def check_connection(url):
+    valid_connection = False
+    try:
+        if urllib.request.urlopen(url).getcode() == 200:
+            valid_connection = True
+    except Exception:
+        # something went horribly wrong and the url is probably invalid in some way
+        pass
+
+    return valid_connection
+
+
 def condense(info_list):
     df = pd.DataFrame(info_list)
     # gets number of entries 
@@ -108,8 +125,7 @@ def condense(info_list):
 
 ################## for use with yellbot.py #################
 def get_new_yells(yell_history):
-    url = 'http://classicffxi.com/api/v1/misc/yells'
-    yell_info = r.get(url).text
+    yell_info = r.get(yell_url).text
     yell_info = ast.literal_eval(yell_info)
 
     displace = -1
