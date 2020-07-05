@@ -142,6 +142,8 @@ def yell_formatter(yell):
     f_yell = yell_date_formatter(yell)
     name = f_yell['speaker']
     message = f_yell['message']
+    # replace unparseable character if given by site
+    message = message.replace('\x85', '')
     date = f_yell['date']
 
     return f'[{date}] **{name}**: {message}'
