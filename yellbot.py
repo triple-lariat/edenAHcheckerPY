@@ -4,10 +4,8 @@
 
 import discord
 import asyncio
-import requests as r
-from discord.ext import commands
-from datetime import datetime
-import json, ast, pytz, platform, time, sys
+
+import sys
 import edenAHhelper as helper
 
 try:
@@ -59,11 +57,12 @@ class MyClient(discord.Client):
 
         try:
             while not self.is_closed():
-                if helper.check_channels_exist():
+                if helper.check_channels_exist() and helper.check_connection(helper.yell_url):
                     print(f"[{helper.get_my_timestamp_now()}] cycle started.")
                     channel_ids = helper.get_yell_channels()
                     if log_yells:
                         log = open('eden_yell_log.txt', 'a')
+
                     yell_tuple = helper.get_new_yells(yell_history)
                     yell_history = yell_tuple[1]
                     for yell in yell_tuple[0]:
@@ -83,6 +82,11 @@ class MyClient(discord.Client):
                     counter += 1
                     print(f'[{helper.get_my_timestamp_now()}] cycle {counter} complete.')
                     log.close()
+                else:
+                    print(f'[{helper.get_my_timestamp_now()}] cycle skipped.' +
+                          ' Either no channels are registered or the site is down.')
+                    # wait an addition 30 sec when server is possibly down
+                    await asyncio.sleep(30)
                 await asyncio.sleep(30)  # task runs every 30 seconds
         except Exception:
             print('Background task raised exception')
