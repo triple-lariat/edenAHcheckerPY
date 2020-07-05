@@ -1,3 +1,7 @@
+# Author: triple-lariat a.k.a: Tranquille, Desarroi, M.B.
+# Any issues you encounter can be posted to https://github.com/triple-lariat/edenAHcheckerPY
+# You may also find me on Eden or Eden's discord under the name Tranquille
+
 import discord
 import asyncio
 import requests as r
