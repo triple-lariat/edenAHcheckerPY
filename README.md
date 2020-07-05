@@ -7,11 +7,13 @@ json,
 ast,
 re,
 pytz,
-pandas<br><br>
+pandas, probably others I forgot to mention here >_><br><br>
+This bot is designed to pull info from classicffxi.com and post it in a discord channel.<br>
+In other words, it's designed for Eden private server.<br><br>
 In order to use this bot you MUST create your own eden_bot_token.py with a variable of the same name containing your bot's token.
 <br><br>
 Usage: the main bot.py contains the !ah and !b commands to check bazaar and auction entries from the Eden website.<br><br>
-yellbot.py pings the website's yell info every 30 seconds and posts new yells to a designated channel. For now, the channel ID where you want the yells to be posted must be hard-coded in (line 30)
+yellbot.py pings the website's yell info every 30 seconds and posts new yells to certain channels. Channels can be added using the !yells command.
 <br><br>
 With the way that Discord bots work, you can run both scripts simulateously to get both functionalities.
 <br>In Windows, this is as easy as just opening both scripts.<br>
