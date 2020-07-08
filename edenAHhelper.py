@@ -83,6 +83,13 @@ def build_yell_embed():
     return embed
 
 
+def check_player_exist(player):
+    url = char_url + player
+    if r.get(url).text:
+        return True
+    return False
+
+
 def get_player_crafts(player):
     url = char_url + player + '/crafts'
     craft_info = r.get(url).text
