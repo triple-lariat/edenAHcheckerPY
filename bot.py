@@ -100,7 +100,7 @@ async def b(ctx, *, message: str):
     separator = '_'
     item_name = separator.join(message)
 
-    page_exist = helper.check_item(item_name)
+    page_exist = helper.check_item(item_name)[1]
 
     await ctx.send(embed=helper.build_bazaar_embed(item_name, page_exist))
 
