@@ -65,6 +65,10 @@ async def args(ctx, *, message: str):
     for item in enumerate(message):
         await ctx.send(message[item[0]])
 
+@bot.command()
+async def crafts(ctx, message: str):
+    crafts = helper.get_player_crafts(message)
+    await ctx.send(embed=helper.build_crafts_embed(message, crafts))
 
 @bot.command()
 async def ah(ctx, *, message: str):

@@ -15,6 +15,7 @@ import requests as r
 
 # constants
 yell_url = 'http://classicffxi.com/api/v1/misc/yells'
+char_url = 'http://classicffxi.com/api/v1/chars/'
 
 
 def check_item(item_name):
@@ -81,6 +82,19 @@ def build_yell_embed():
     print(len(yell_info))
     return embed
 
+
+def get_player_crafts(player):
+    url = char_url + player + '/crafts'
+    craft_info = r.get(url).text
+    craft_info = ast.literal_eval(craft_info)
+    return craft_info
+
+
+def build_crafts_embed(player, craft_info):
+    embed = discord.Embed(title=player)
+    for craft in craft_info:
+        embed.add_field(name=craft, value=craft_info[craft])
+    return embed
 
 def get_ET_timestamp(unix_ts):
     tz = pytz.timezone('America/New_York')
