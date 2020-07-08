@@ -67,8 +67,11 @@ async def args(ctx, *, message: str):
 
 @bot.command()
 async def crafts(ctx, message: str):
-    crafts = helper.get_player_crafts(message)
-    await ctx.send(embed=helper.build_crafts_embed(message, crafts))
+    if helper.check_player_exist(message):
+        crafts = helper.get_player_crafts(message)
+        await ctx.send(embed=helper.build_crafts_embed(message, crafts))
+    else:
+        await ctx.send('Player not found.')
 
 @bot.command()
 async def ah(ctx, *, message: str):
