@@ -104,11 +104,6 @@ async def b(ctx, *, message: str):
 
     await ctx.send(embed=helper.build_bazaar_embed(item_name, page_exist))
 
-
-# @bot.command(aliases=['y'])
-# async def yells(ctx):
-#        await ctx.send(embed=helper.build_yell_embed())
-
 # Add help details for yellbot.py commands.
 @bot.command()
 async def yells(ctx):
