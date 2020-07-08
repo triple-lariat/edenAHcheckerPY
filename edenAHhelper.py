@@ -50,7 +50,7 @@ def build_AH_embed(item_name, exist_flag, stack_flag):
 
 def build_bazaar_embed(item_name, exist_flag):
     embed_title = format_name(item_name)
-    if not exist_flag:
+    if exist_flag == 'false':
         return discord.Embed(title='Invalid item name given.')
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/bazaar'
     ah_info = r.get(url).text
