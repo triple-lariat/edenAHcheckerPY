@@ -66,6 +66,14 @@ async def args(ctx, *, message: str):
         await ctx.send(message[item[0]])
 
 @bot.command()
+async def check(ctx, message: str):
+    if helper.check_player_exist(message):
+        p_info = helper.get_player_info(message)
+        await ctx.send(embed=helper.build_player_info_embed(message, p_info))
+    else:
+        await ctx.send('Player not found.')
+
+@bot.command()
 async def crafts(ctx, message: str):
     if helper.check_player_exist(message):
         crafts = helper.get_player_crafts(message)
