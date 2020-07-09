@@ -71,25 +71,25 @@ class Player(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def check(self, message: str):
+    async def check(self, ctx, message: str):
         '''Gets basic player info.
             Usage: !check [player]'''
         player_name = helper.format_player_name(message)
         if helper.check_player_exist(player_name):
             p_info = helper.get_player_info(player_name)
-            await self.send(embed=helper.build_player_info_embed(player_name, p_info))
+            await ctx.send(embed=helper.build_player_info_embed(player_name, p_info))
         else:
-            await self.send('Player not found.')
+            await ctx.send('Player not found.')
 
     @commands.command()
-    async def crafts(self, message: str):
+    async def crafts(self, ctx, message: str):
         '''Get a player's crafting levels.
             Usage: !crafts [player]'''
         if helper.check_player_exist(message):
             crafts = helper.get_player_crafts(message)
-            await self.send(embed=helper.build_crafts_embed(message, crafts))
+            await ctx.send(embed=helper.build_crafts_embed(message, crafts))
         else:
-            await self.send('Player not found.')
+            await ctx.send('Player not found.')
 
 
 class Market(commands.Cog):
@@ -97,7 +97,7 @@ class Market(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def ah(self, *, message: str):
+    async def ah(self, ctx, *, message: str):
         '''Gets the AH entries for an item from the website.
             Usage: !ah [item name] [y for stack]'''
         # split the arguments given with command into an array
@@ -116,10 +116,10 @@ class Market(commands.Cog):
         if page_exist[1] == 'false':
             stack_flag = page_exist[1]
 
-        await self.send(embed=helper.build_AH_embed(item_name, page_exist[0], stack_flag))
+        await ctx.send(embed=helper.build_AH_embed(item_name, page_exist[0], stack_flag))
 
     @commands.command(aliases=['bazaar'], category="Market")
-    async def b(self, *, message: str):
+    async def b(self, ctx, *, message: str):
         '''Gets the bazaar entries for an item. May take a while...
            Usage: !b [item name]
            Note: the "x2" or other number beside an entry shows how many
@@ -131,7 +131,7 @@ class Market(commands.Cog):
 
         page_exist = helper.check_item(item_name)[1]
 
-        await self.send(embed=helper.build_bazaar_embed(item_name, page_exist))
+        await ctx.send(embed=helper.build_bazaar_embed(item_name, page_exist))
 
 
 # Add help details for yellbot.py commands.
