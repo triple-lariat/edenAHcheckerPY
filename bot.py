@@ -54,16 +54,17 @@ async def getid(ctx, *, message: str):
     csv.close()
 
 
-@bot.command()
+@bot.command(hidden=True)
 async def ping(ctx):
     await ctx.send('pong')
 
 
-@bot.command()
+@bot.command(hidden=True)
 async def args(ctx, *, message: str):
     message = message.split(' ')
     for item in enumerate(message):
         await ctx.send(message[item[0]])
+
 
 @bot.command()
 async def check(ctx, message: str):
@@ -76,13 +77,17 @@ async def check(ctx, message: str):
     else:
         await ctx.send('Player not found.')
 
+
 @bot.command()
 async def crafts(ctx, message: str):
+    '''Get a player's crafting levels.
+       Usage: !crafts [player]'''
     if helper.check_player_exist(message):
         crafts = helper.get_player_crafts(message)
         await ctx.send(embed=helper.build_crafts_embed(message, crafts))
     else:
         await ctx.send('Player not found.')
+
 
 @bot.command()
 async def ah(ctx, *, message: str):
@@ -122,12 +127,14 @@ async def b(ctx, *, message: str):
 
     await ctx.send(embed=helper.build_bazaar_embed(item_name, page_exist))
 
+
 # Add help details for yellbot.py commands.
 @bot.command()
 async def yells(ctx):
     '''Enables live yell chat log in the channel this command is used in.
            Usage: !yells [on|off]'''
     return
+
 
 try:
     bot.run(eden_bot_token)
