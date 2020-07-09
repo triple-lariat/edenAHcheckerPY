@@ -2,11 +2,10 @@
 # Any issues you encounter can be posted to https://github.com/triple-lariat/edenAHcheckerPY
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
-import discord
-from discord.ext import commands, tasks
-import asyncio
+import asyncio, sys
 
-import sys
+from discord.ext import commands, tasks
+
 import edenAHhelper as helper
 
 
