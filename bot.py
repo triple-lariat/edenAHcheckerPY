@@ -67,9 +67,10 @@ async def args(ctx, *, message: str):
 
 @bot.command()
 async def check(ctx, message: str):
-    if helper.check_player_exist(message):
-        p_info = helper.get_player_info(message)
-        await ctx.send(embed=helper.build_player_info_embed(message, p_info))
+    player_name = helper.format_player_name(message)
+    if helper.check_player_exist(player_name):
+        p_info = helper.get_player_info(player_name)
+        await ctx.send(embed=helper.build_player_info_embed(player_name, p_info))
     else:
         await ctx.send('Player not found.')
 

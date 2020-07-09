@@ -12,6 +12,7 @@ from datetime import datetime
 import discord
 import pandas as pd
 import requests as r
+import re
 
 # constants
 yell_url = 'http://classicffxi.com/api/v1/misc/yells'
@@ -211,17 +212,23 @@ def build_yell_embed():
     return embed
 
 
+def format_player_name(name):
+    return re.sub(r'\W+', '', name)
+
+
 def check_player_exist(player):
     url = char_url + player
     if r.get(url).text:
         return True
     return False
 
+
 def get_player_info(player):
     url = char_url + player
     p_info = r.get(url).text
     p_info = ast.literal_eval(p_info)
     return p_info
+
 
 def get_nation(nation_id):
     if nation_id == 1:
@@ -231,8 +238,10 @@ def get_nation(nation_id):
     else:
         return "San d'Oria"
 
+
 def get_avatar_img(avatar_id):
     return avatars[avatar_id]
+
 
 def get_player_crafts(player):
     url = char_url + player + '/crafts'
@@ -256,11 +265,13 @@ def build_player_info_embed(player, p_info):
 
     return embed
 
+
 def build_crafts_embed(player, craft_info):
     embed = discord.Embed(title=player)
     for craft in craft_info:
         embed.add_field(name=craft, value=craft_info[craft])
     return embed
+
 
 def get_ET_timestamp(unix_ts):
     tz = pytz.timezone('America/New_York')
