@@ -21,16 +21,16 @@ class yell_log(commands.Cog):
         if message == 'on':
             if ctx.author.permissions_in(ctx.channel).manage_messages:
                 helper.add_yell_channel(ctx.channel.id)
-                await ctx.channel.send('Yell messages will be sent to this channel.')
+                await ctx.send('Yell messages will be sent to this channel.')
             else:
-                await ctx.channel.send(f'{ctx.author.mention}' +
-                                       ' you must have "manage messages" permissions to use this command!')
+                await ctx.send(f'{ctx.author.mention}' +
+                               ' you must have "manage messages" permissions to use this command!')
             return
         if message == 'off':
             if ctx.author.permissions_in(ctx.channel).manage_messages:
                 helper.del_yell_channel(ctx.channel.id)
-                await ctx.channel.send('Yell messages have been disabled for this channel.')
+                await ctx.send('Yell messages have been disabled for this channel.')
             else:
-                await ctx.channel.send(f'{ctx.author.mention}' +
-                                       ' you must have "manage messages" permissions to use this command!')
+                await ctx.send(f'{ctx.author.mention}' +
+                               ' you must have "manage messages" permissions to use this command!')
             return
