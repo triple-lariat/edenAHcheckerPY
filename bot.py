@@ -66,66 +66,72 @@ async def args(ctx, *, message: str):
         await ctx.send(message[item[0]])
 
 
-@bot.command()
-async def check(ctx, message: str):
-    '''Gets basic player info.
-       Usage: !check [player]'''
-    player_name = helper.format_player_name(message)
-    if helper.check_player_exist(player_name):
-        p_info = helper.get_player_info(player_name)
-        await ctx.send(embed=helper.build_player_info_embed(player_name, p_info))
-    else:
-        await ctx.send('Player not found.')
+class Player(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command()
+    async def check(self, message: str):
+        '''Gets basic player info.
+            Usage: !check [player]'''
+        player_name = helper.format_player_name(message)
+        if helper.check_player_exist(player_name):
+            p_info = helper.get_player_info(player_name)
+            await self.send(embed=helper.build_player_info_embed(player_name, p_info))
+        else:
+            await self.send('Player not found.')
+
+    @commands.command()
+    async def crafts(self, message: str):
+        '''Get a player's crafting levels.
+            Usage: !crafts [player]'''
+        if helper.check_player_exist(message):
+            crafts = helper.get_player_crafts(message)
+            await self.send(embed=helper.build_crafts_embed(message, crafts))
+        else:
+            await self.send('Player not found.')
 
 
-@bot.command()
-async def crafts(ctx, message: str):
-    '''Get a player's crafting levels.
-       Usage: !crafts [player]'''
-    if helper.check_player_exist(message):
-        crafts = helper.get_player_crafts(message)
-        await ctx.send(embed=helper.build_crafts_embed(message, crafts))
-    else:
-        await ctx.send('Player not found.')
+class Market(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
 
-
-@bot.command()
-async def ah(ctx, *, message: str):
-    '''Gets the AH entries for an item from the website.
+    @commands.command()
+    async def ah(self, *, message: str):
+        '''Gets the AH entries for an item from the website.
             Usage: !ah [item name] [y for stack]'''
-    # split the arguments given with command into an array
-    message = message.split(' ')
-    separator = '_'
-    # check whether to look up a stack or single of given item
-    stack_flag = 'false'
-    if message[-1] == 'y':
-        stack_flag = 'true'
-        item_name = separator.join(message[:-1])
-    else:
-        item_name = separator.join(message)
+        # split the arguments given with command into an array
+        message = message.split(' ')
+        separator = '_'
+        # check whether to look up a stack or single of given item
+        stack_flag = 'false'
+        if message[-1] == 'y':
+            stack_flag = 'true'
+            item_name = separator.join(message[:-1])
+        else:
+            item_name = separator.join(message)
 
-    # check if the item given actually exists
-    page_exist = helper.check_item(item_name)
-    if page_exist[1] == 'false':
-        stack_flag = page_exist[1]
+        # check if the item given actually exists
+        page_exist = helper.check_item(item_name)
+        if page_exist[1] == 'false':
+            stack_flag = page_exist[1]
 
-    await ctx.send(embed=helper.build_AH_embed(item_name, page_exist[0], stack_flag))
+        await self.send(embed=helper.build_AH_embed(item_name, page_exist[0], stack_flag))
 
-
-@bot.command(aliases=['bazaar'])
-async def b(ctx, *, message: str):
-    '''Gets the bazaar entries for an item. May take a while...
+    @commands.command(aliases=['bazaar'], category="Market")
+    async def b(self, *, message: str):
+        '''Gets the bazaar entries for an item. May take a while...
            Usage: !b [item name]
            Note: the "x2" or other number beside an entry shows how many
            individual item slots, not the actual amount.'''
-    # split the arguments given with command into an array
-    message = message.split(' ')
-    separator = '_'
-    item_name = separator.join(message)
+        # split the arguments given with command into an array
+        message = message.split(' ')
+        separator = '_'
+        item_name = separator.join(message)
 
-    page_exist = helper.check_item(item_name)[1]
+        page_exist = helper.check_item(item_name)[1]
 
-    await ctx.send(embed=helper.build_bazaar_embed(item_name, page_exist))
+        await self.send(embed=helper.build_bazaar_embed(item_name, page_exist))
 
 
 # Add help details for yellbot.py commands.
@@ -135,6 +141,9 @@ async def yells(ctx):
            Usage: !yells [on|off]'''
     return
 
+# add created cogs
+bot.add_cog(Player(bot))
+bot.add_cog(Market(bot))
 
 try:
     bot.run(eden_bot_token)
