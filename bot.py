@@ -67,6 +67,8 @@ async def args(ctx, *, message: str):
 
 @bot.command()
 async def check(ctx, message: str):
+    '''Gets basic player info.
+       Usage: !check [player]'''
     player_name = helper.format_player_name(message)
     if helper.check_player_exist(player_name):
         p_info = helper.get_player_info(player_name)
