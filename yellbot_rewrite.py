@@ -2,7 +2,8 @@
 # Any issues you encounter can be posted to https://github.com/triple-lariat/edenAHcheckerPY
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
-import asyncio, sys
+import asyncio
+import sys
 
 from discord.ext import commands, tasks
 
