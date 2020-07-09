@@ -40,7 +40,7 @@ class yell_log(commands.Cog):
                                ' you must have "manage messages" permissions to use this command!')
             return
 
-    @tasks.loop(seconds=30)
+    @tasks.loop(seconds=40)
     async def yellbot_task(self):
         await self.bot.wait_until_ready()
         try:
