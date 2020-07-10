@@ -318,7 +318,7 @@ def condense(info_list):
     return df
 
 
-################## for use with yellbot.py #################
+################## for use with yellbot #################
 def get_new_yells(yell_history):
     yell_info = r.get(yell_url).text
     yell_info = ast.literal_eval(yell_info)

@@ -23,7 +23,7 @@ class MyClient(discord.Client):
         self.bg_task = self.loop.create_task(self.my_background_task())
 
     async def on_ready(self):
-        print('yellbot.py logged in as')
+        print('yellbot_legacy.py logged in as')
         print(self.user.name)
         print(self.user.id)
         print('------')

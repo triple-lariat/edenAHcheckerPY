@@ -8,6 +8,7 @@ import discord
 from discord.ext import commands
 
 import edenAHhelper as helper
+import yellbot_rewrite as yellbot
 
 # import bot token from separate file 'eden_bot_token.py'
 try:
@@ -134,16 +135,10 @@ class Market(commands.Cog):
         await ctx.send(embed=helper.build_bazaar_embed(item_name, page_exist))
 
 
-# Add help details for yellbot.py commands.
-@bot.command()
-async def yells(ctx):
-    '''Enables live yell chat log in the channel this command is used in.
-           Usage: !yells [on|off]'''
-    return
-
 # add created cogs
 bot.add_cog(Player(bot))
 bot.add_cog(Market(bot))
+bot.add_cog(yellbot.yell_log(bot))
 
 try:
     bot.run(eden_bot_token)
