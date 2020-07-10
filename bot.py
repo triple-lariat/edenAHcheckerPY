@@ -70,7 +70,7 @@ class Player(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(aliases=['c'])
     async def check(self, ctx, message: str):
         '''Gets basic player info.
             Usage: !check [player]'''
@@ -81,7 +81,7 @@ class Player(commands.Cog):
         else:
             await ctx.send('Player not found.')
 
-    @commands.command()
+    @commands.command(aliases=['craft'])
     async def crafts(self, ctx, message: str):
         '''Get a player's crafting levels.
             Usage: !crafts [player]'''
