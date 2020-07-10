@@ -71,7 +71,7 @@ class Player(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases='c')
+    @commands.command(aliases=['c'])
     async def check(self, ctx, message: str):
         '''Gets basic player info.
             Usage: !check [player]'''
@@ -120,7 +120,7 @@ class Market(commands.Cog):
         await ctx.send(embed=helper.build_AH_embed(item_name, page_exist[0], stack_flag))
 
     @commands.command(aliases=['bazaar'], category="Market")
-    async def b(self, ctx,  *, message: str):
+    async def b(self, ctx, *, message: str):
         '''Gets the bazaar entries for an item. May take a while...
            Usage: !b [item name]
            Note: the "x2" or other number beside an entry shows how many
