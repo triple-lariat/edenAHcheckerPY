@@ -8,7 +8,7 @@ import discord
 from discord.ext import commands
 
 import edenAHhelper as helper
-import yellbot_rewrite as yellbot
+import yellbot
 
 # import bot token from separate file 'eden_bot_token.py'
 try:
