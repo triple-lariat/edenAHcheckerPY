@@ -147,6 +147,15 @@ avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.j
                tm1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d8/Tm1a.jpg')
 
 
+def format_item_string(item):
+    item = item.split(' ')
+    i = 0
+    while i < len(item):
+        item[i] = re.sub(r"[!@#$%^&*']+", '', item[i])
+        i += 1
+    print(item)
+    return item
+
 def check_item(item_name):
     check_url = f'http://www.classicffxi.com/api/v1/items/{item_name}'
     check_page = r.get(check_url).text

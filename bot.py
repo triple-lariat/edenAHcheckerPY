@@ -102,7 +102,7 @@ class Market(commands.Cog):
         '''Gets the AH entries for an item from the website.
             Usage: !ah [item name] [y for stack]'''
         # split the arguments given with command into an array
-        message = message.split(' ')
+        message = helper.format_item_string(message)
         separator = '_'
         # check whether to look up a stack or single of given item
         stack_flag = 'false'
@@ -126,7 +126,7 @@ class Market(commands.Cog):
            Note: the "x2" or other number beside an entry shows how many
            individual item slots, not the actual amount.'''
         # split the arguments given with command into an array
-        message = message.split(' ')
+        message = helper.format_item_string(message)
         separator = '_'
         item_name = separator.join(message)
 
