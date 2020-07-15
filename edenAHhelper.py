@@ -164,7 +164,7 @@ item_prefixes = [
     'jar_of_',
     'bag_of_',
     'bunch_of_',
-    'remnant_of_'
+    'remnant_of_a_'
 ]
 
 
@@ -213,7 +213,6 @@ def check_item_prefixes(item):
     while i < len(item_prefixes):
         prefix = item_prefixes[i]
         item_exists = check_item(prefix + item, True)
-        print(item_exists, prefix)
         if item_exists[0]:
             item_exists[2] = prefix
             return item_exists
