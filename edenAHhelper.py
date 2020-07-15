@@ -145,6 +145,40 @@ avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.j
                tm3a='https://vignette.wikia.nocookie.net/ffxi/images/d/d9/Tm3a.jpg',
                tm2a='https://vignette.wikia.nocookie.net/ffxi/images/f/f0/Tm2a.jpg',
                tm1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d8/Tm1a.jpg')
+item_prefixes = [
+    'piece_of_',
+    'square_of_',
+    'chunk_of_',
+    'pot_of_',
+    'flask_of_',
+    'pinch_of_',
+    'bottle_of_',
+    'vial_of_',
+    'sprig_of_',
+    'handful_of_',
+    'lump_of_',
+    'clump_of_',
+    'bottle_of_',
+    'loop_of_',
+    'block_of_',
+    'jar_of_',
+    'bag_of_',
+    'bunch_of_',
+    'remnant_of_'
+]
+
+
+def init_item_names():
+    csv = open('item_names_and_ids.csv', 'r')
+    item_info = []
+    for line in csv:
+        item_info.append(line.split(',')[1].rstrip())
+
+    csv.close()
+    return item_info
+
+
+item_names = init_item_names()
 
 
 def format_item_string(item):
@@ -156,17 +190,35 @@ def format_item_string(item):
     print(item)
     return item
 
-def check_item(item_name):
+
+def check_item(item_name, recursive_flag):
+    if item_name not in item_names:
+        if recursive_flag:
+            return [False, 'false', '']
+        return check_item_prefixes(item_name)
+
     check_url = f'http://www.classicffxi.com/api/v1/items/{item_name}'
     check_page = r.get(check_url).text
-    print(check_page)
     if check_page == '':
         page_exist = False
         is_stackable = 'false'
     else:
         page_exist = True
         is_stackable = check_page.split(',')[1][11:]
-    return (page_exist, is_stackable)
+    return [page_exist, is_stackable, '']
+
+
+def check_item_prefixes(item):
+    i = 0
+    while i < len(item_prefixes):
+        prefix = item_prefixes[i]
+        item_exists = check_item(prefix + item, True)
+        print(item_exists, prefix)
+        if item_exists[0]:
+            item_exists[2] = prefix
+            return item_exists
+        i += 1
+    return (False, 'false', '')
 
 
 def build_AH_embed(item_name, exist_flag, stack_flag):

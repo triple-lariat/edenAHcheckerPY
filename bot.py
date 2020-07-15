@@ -112,8 +112,13 @@ class Market(commands.Cog):
         else:
             item_name = separator.join(message)
 
-        # check if the item given actually exists
-        page_exist = helper.check_item(item_name)
+        # check if the item given actually exists, pass recursive flag as false
+        page_exist = helper.check_item(item_name, False)
+        prefix = page_exist[2]
+
+        # concat item name and prefix if one was not given by command args
+        item_name = prefix + item_name
+
         if page_exist[1] == 'false':
             stack_flag = page_exist[1]
 
@@ -130,7 +135,12 @@ class Market(commands.Cog):
         separator = '_'
         item_name = separator.join(message)
 
-        page_exist = helper.check_item(item_name)[1]
+        page_exist = helper.check_item(item_name, False)[1]
+
+        prefix = page_exist[2]
+
+        # concat item name and prefix if one was not given by command args
+        item_name = prefix + item_name
 
         await ctx.send(embed=helper.build_bazaar_embed(item_name, page_exist))
 
