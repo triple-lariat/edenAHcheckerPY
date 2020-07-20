@@ -9,6 +9,7 @@ from discord.ext import commands
 
 import edenAHhelper as helper
 import yellbot
+import math_commands
 
 # import bot token from separate file 'eden_bot_token.py'
 try:
@@ -76,6 +77,7 @@ class Misc(commands.Cog):
         '''Get the exp from the beginning of a certain level to the end of another.
         Usage: !tnl [initial level] [target level]'''
         lvls = message.split(' ')
+        lvls.append('75')
         print(lvls)
         try:
             initial_level = int(lvls[0])
@@ -172,6 +174,7 @@ class Market(commands.Cog):
 bot.add_cog(Player(bot))
 bot.add_cog(Market(bot))
 bot.add_cog(Misc(bot))
+bot.add_cog(math_commands.Math(bot))
 bot.add_cog(yellbot.yell_log(bot))
 
 try:

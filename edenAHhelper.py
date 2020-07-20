@@ -147,6 +147,7 @@ avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.j
                tm1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d8/Tm1a.jpg')
 item_prefixes = [
     'piece_of_',
+    'scroll_of_',
     'square_of_',
     'chunk_of_',
     'pot_of_',
