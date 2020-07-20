@@ -135,7 +135,7 @@ class Market(commands.Cog):
         separator = '_'
         item_name = separator.join(message)
 
-        page_exist = helper.check_item(item_name, False)[1]
+        page_exist = helper.check_item(item_name, False)
 
         prefix = page_exist[2]
 
