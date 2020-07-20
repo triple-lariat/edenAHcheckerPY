@@ -9,6 +9,7 @@ from discord.ext import commands
 
 import edenAHhelper as helper
 import yellbot
+import math_commands
 
 # import bot token from separate file 'eden_bot_token.py'
 try:
@@ -65,6 +66,30 @@ async def args(ctx, *, message: str):
     message = message.split(' ')
     for item in enumerate(message):
         await ctx.send(message[item[0]])
+
+
+class Misc(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(aliases=['exp'])
+    async def tnl(self, ctx, *, message: str):
+        '''Get the exp from the beginning of a certain level to the end of another.
+        Usage: !tnl [initial level] [target level]'''
+        lvls = message.split(' ')
+        lvls.append('75')
+        print(lvls)
+        try:
+            initial_level = int(lvls[0])
+            target_level = int(lvls[1])
+            exp_msg = helper.get_tnl(initial_level, target_level)
+
+            await ctx.send(exp_msg)
+
+        except ValueError:
+            await ctx.send('Levels must be provided as numbers (like 1 or 30)')
+        except IndexError:
+            await ctx.send('Must provide two levels.')
 
 
 class Player(commands.Cog):
@@ -148,6 +173,8 @@ class Market(commands.Cog):
 # add created cogs
 bot.add_cog(Player(bot))
 bot.add_cog(Market(bot))
+bot.add_cog(Misc(bot))
+bot.add_cog(math_commands.Math(bot))
 bot.add_cog(yellbot.yell_log(bot))
 
 try:
