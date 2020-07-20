@@ -50,7 +50,7 @@ class Math(commands.Cog):
         except ZeroDivisionError:
             await ctx.send('You cannot divide by zero.')
 
-    @commands.command(aliases=['multiply', 'multiplication', 'times'])
+    @commands.command(aliases=['multiply', 'multiplication', 'times', 'multi'])
     async def mult(self, ctx, *, message: str):
         '''Multiplies numbers
         Usage: !mult [num] [num] ...'''
