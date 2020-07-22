@@ -6,8 +6,7 @@ import platform
 
 import discord
 from discord.ext import commands
-
-import edenbotcogs
+from edenbotcogs.cogs import *
 
 # import bot token from separate file 'eden_bot_token.py'
 try:
@@ -44,11 +43,11 @@ async def args(ctx, *, message: str):
         await ctx.send(message[item[0]])
 
 # add created cogs
-bot.add_cog(edenbotcogs.Player(bot))
-bot.add_cog(edenbotcogs.Market(bot))
-bot.add_cog(edenbotcogs.Misc(bot))
-bot.add_cog(edenbotcogs.math_commands.Math(bot))
-bot.add_cog(edenbotcogs.yellbot.yell_log(bot))
+bot.add_cog(Player.Player(bot))
+bot.add_cog(Market.Market(bot))
+bot.add_cog(Misc.Misc(bot))
+bot.add_cog(math_commands.Math(bot))
+bot.add_cog(yellbot.yell_log(bot))
 
 try:
     bot.run(eden_bot_token)

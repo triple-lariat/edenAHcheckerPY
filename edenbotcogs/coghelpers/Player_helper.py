@@ -3,7 +3,7 @@
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
 import re
-import discord.Embed
+import discord.embeds
 import requests as r
 import ast
 
