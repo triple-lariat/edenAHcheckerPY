@@ -6,7 +6,7 @@ import discord
 import asyncio
 
 import sys
-import edenAHhelper as helper
+import edenAHhelper_legacy as helper
 
 try:
     from eden_bot_token import eden_bot_token
