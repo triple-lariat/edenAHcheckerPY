@@ -43,7 +43,7 @@ def yell_date_formatter(yell):
 
 
 def get_yell_channels():
-    ch_list = open('yell_channels.csv', 'r')
+    ch_list = open('./data/yell_channels.csv', 'r')
     channel_ids = []
     for ch_id in ch_list:
         channel_ids.append(int(ch_id.rstrip()))
@@ -53,7 +53,7 @@ def get_yell_channels():
 
 
 def add_yell_channel(channel_id):
-    ch_list = open('yell_channels.csv', 'r+')
+    ch_list = open('./data/yell_channels.csv', 'r+')
     id_exists = False
     for ch_id in ch_list:
         if ch_id.rstrip() == f'{channel_id}':
@@ -66,7 +66,7 @@ def add_yell_channel(channel_id):
 
 
 def del_yell_channel(channel_id):
-    ch_list = open('yell_channels.csv', 'r+')
+    ch_list = open('./data/yell_channels.csv', 'r+')
     lines = ch_list.readlines()
     ch_list.seek(0)
     for i in lines:
@@ -81,7 +81,7 @@ def check_channels_exist():
     try:
         existent = get_yell_channels()
     except FileNotFoundError:
-        create_yell_channels = open('yell_channels.csv', 'w')
+        create_yell_channels = open('./data/yell_channels.csv', 'w')
         create_yell_channels.close()
         existent = []
 

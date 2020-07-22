@@ -36,7 +36,7 @@ class Misc(commands.Cog):
         message = message.split(' ')
         separator = '_'
         item_name = separator.join(message)
-        csv = open('item_names_and_ids.csv', 'r')
+        csv = open('./data/item_names_and_ids.csv', 'r')
         item_info = []
         for line in csv:
             item_info.append(line.split(','))

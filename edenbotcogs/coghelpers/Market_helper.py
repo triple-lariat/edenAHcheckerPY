@@ -8,6 +8,7 @@ import pandas as pd
 import pytz
 import requests as r
 import discord.embeds
+import os
 
 item_prefixes = [
     'piece_of_',
@@ -34,7 +35,7 @@ item_prefixes = [
 
 
 def init_item_names():
-    csv = open('item_names_and_ids.csv', 'r')
+    csv = open('./data/item_names_and_ids.csv', 'r')
     item_info = []
     for line in csv:
         item_info.append(line.split(',')[1].rstrip())

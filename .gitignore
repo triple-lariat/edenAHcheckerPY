@@ -2,7 +2,7 @@
 eden_bot_token.py
 *.pyc
 eden_yell_log.txt
-yell_channels.csv
+data/yell_channels.csv
 .idea/workspace.xml
 .idea/modules.xml
 .idea/edenAHcheckerPY.iml
