@@ -4,10 +4,8 @@
 
 import asyncio
 import sys
-
+from edenbotcogs.coghelpers.yellbot_helper import *
 from discord.ext import commands, tasks
-
-import edenAHhelper as helper
 
 
 class yell_log(commands.Cog):
@@ -25,7 +23,7 @@ class yell_log(commands.Cog):
                Usage: !yells [on|off]'''
         if message == 'on':
             if ctx.author.permissions_in(ctx.channel).manage_messages:
-                helper.add_yell_channel(ctx.channel.id)
+                add_yell_channel(ctx.channel.id)
                 await ctx.send('Yell messages will be sent to this channel.')
             else:
                 await ctx.send(f'{ctx.author.mention}' +
@@ -33,7 +31,7 @@ class yell_log(commands.Cog):
             return
         if message == 'off':
             if ctx.author.permissions_in(ctx.channel).manage_messages:
-                helper.del_yell_channel(ctx.channel.id)
+                del_yell_channel(ctx.channel.id)
                 await ctx.send('Yell messages have been disabled for this channel.')
             else:
                 await ctx.send(f'{ctx.author.mention}' +
@@ -44,16 +42,16 @@ class yell_log(commands.Cog):
     async def yellbot_task(self):
         await self.bot.wait_until_ready()
         try:
-            if helper.check_channels_exist() and helper.check_connection(helper.yell_url):
-                print(f"[{helper.get_my_timestamp_now()}] cycle started.")
-                channel_ids = helper.get_yell_channels()
+            if check_channels_exist() and check_connection(yell_url):
+                print(f"[{get_my_timestamp_now()}] cycle started.")
+                channel_ids = get_yell_channels()
                 if self.log_yells:
                     log = open('eden_yell_log.txt', 'a')
 
-                yell_tuple = helper.get_new_yells(self.yell_history)
+                yell_tuple = get_new_yells(self.yell_history)
                 self.yell_history = yell_tuple[1]
                 for yell in yell_tuple[0]:
-                    yell_message = helper.yell_formatter(yell)
+                    yell_message = yell_formatter(yell)
 
                     if self.log_yells:
                         log.write(yell_message + '\n')
@@ -64,13 +62,13 @@ class yell_log(commands.Cog):
                             await to_send.send(yell_message)
                         except AttributeError:
                             print(sys.exc_info())
-                            helper.del_yell_channel(channel)
+                            del_yell_channel(channel)
                             print(f'Purged invalid channel {channel}')
                 self.counter += 1
-                print(f'[{helper.get_my_timestamp_now()}] cycle {self.counter} complete.')
+                print(f'[{get_my_timestamp_now()}] cycle {self.counter} complete.')
                 log.close()
             else:
-                print(f'[{helper.get_my_timestamp_now()}] cycle skipped.' +
+                print(f'[{get_my_timestamp_now()}] cycle skipped.' +
                       ' Either no channels are registered or the site is down.')
                 # wait an addition 30 sec when server is possibly down
                 await asyncio.sleep(30)

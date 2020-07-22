@@ -7,7 +7,6 @@ import platform
 import discord
 from discord.ext import commands
 
-from edenbotcogs import math_commands
 import edenbotcogs
 
 # import bot token from separate file 'eden_bot_token.py'
@@ -31,9 +30,6 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(name=platform.system(),
                                                         type=discord.ActivityType.playing))
-
-
-
 
 
 @bot.command(hidden=True)

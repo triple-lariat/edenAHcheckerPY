@@ -3,6 +3,7 @@
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
 from discord.ext import commands
+from edenbotcogs.coghelpers.Misc_helper import *
 
 
 class Misc(commands.Cog):
@@ -19,7 +20,7 @@ class Misc(commands.Cog):
         try:
             initial_level = int(lvls[0])
             target_level = int(lvls[1])
-            exp_msg = helper.get_tnl(initial_level, target_level)
+            exp_msg = get_tnl(initial_level, target_level)
 
             await ctx.send(exp_msg)
 
