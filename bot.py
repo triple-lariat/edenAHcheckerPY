@@ -3,10 +3,17 @@
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
 import platform
-
+import logging
 import discord
 from discord.ext import commands
 from edenbotcogs.cogs import *
+
+# Set up logging
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='edenAHbot.log', encoding='utf-8', mode='a')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 # import bot token from separate file 'eden_bot_token.py'
 try:
@@ -29,6 +36,17 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(name=platform.system(),
                                                         type=discord.ActivityType.playing))
+
+
+@bot.event
+async def on_command_error(ctx, exception):
+    if isinstance(exception, commands.CommandNotFound):
+        pass
+    elif isinstance(exception, discord.Forbidden):
+        pass
+    elif isinstance(exception, commands.MissingRequiredArgument):
+        await ctx.send(f'Arguments must be provided to use this command {ctx.author.mention}!')
+    print(f'Exception of {ctx.command} in {ctx.guild}: {exception}')
 
 
 @bot.command(hidden=True)
