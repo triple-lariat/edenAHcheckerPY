@@ -33,6 +33,7 @@ class Misc(commands.Cog):
     async def getid(self, ctx, *, message: str):
         '''Get the item ID and homepointxi link for any item
                     (filtered out some OOE items)'''
+        message = message.lower()
         message = message.split(' ')
         separator = '_'
         item_name = separator.join(message)
