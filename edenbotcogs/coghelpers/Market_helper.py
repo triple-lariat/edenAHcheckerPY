@@ -141,6 +141,10 @@ def build_bazaar_embed(item_name, exist_flag):
         return discord.Embed(title='Invalid item name given.')
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/bazaar'
     ah_info = r.get(url).text
+
+    if ah_info == '[]':
+        return discord.Embed(title='No entries found.')
+    
     ah_info = ast.literal_eval(ah_info)
     b_info = []
     embed = discord.Embed(title=embed_title, description='', color=0x00dd00)
