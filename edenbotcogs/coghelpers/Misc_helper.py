@@ -2,6 +2,9 @@
 # Any issues you encounter can be posted to https://github.com/triple-lariat/edenAHcheckerPY
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
+from data.cap_data import *
+import discord.embeds
+
 exp_tnl = {
     1: 500,
     2: 750,
@@ -90,3 +93,41 @@ def get_tnl(init_lv, target_lv):
     for level in range(init_lv, target_lv):
         tnl += exp_tnl[level]
     return f"Exp from Level {init_lv} to Level {target_lv} is {tnl}."
+
+
+def check_job_exist(job):
+    return job in job_ids
+
+
+def get_job_id(job):
+    return job_ids[job]
+
+
+def get_skill_ranks(job):
+    job_id = get_job_id(job)
+    ranks = []
+    for entry in skill_ranks:
+        ranks.append((entry[0], entry[job_id]))
+
+    return ranks
+
+
+def get_caps(job, level):
+    ranks = get_skill_ranks(job)
+    level_caps = caps_by_level[level]
+    caps = []
+    for skill in ranks:
+        caps.append((skill[0], level_caps[skill[1]]))
+
+    return caps
+
+
+def build_skill_embed(job, level):
+    caps = get_caps(job, level)
+    embed = discord.Embed(title=f'{job.upper()}{level}')
+
+    for skill in caps:
+        if skill[1]:
+            embed.add_field(name=skill[0], value=skill[1])
+
+    return embed

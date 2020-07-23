@@ -50,3 +50,23 @@ class Misc(commands.Cog):
         except IndexError:
             await ctx.channel.send('No item found')
         csv.close()
+
+    @commands.command()
+    async def skillcaps(self, ctx, *, message: str):
+        args = message.split()
+        try:
+            job = args[0].lower()
+
+            if not check_job_exist(job):
+                raise IndexError
+            
+            level = int(args[1])
+
+            if level > 75 or level < 1:
+                raise ValueError
+
+            await ctx.send(embed=build_skill_embed(job, level))
+        except ValueError:
+            await ctx.send('Invalid level. Proper usage is !skillcaps [job] [level 1 through 75]')
+        except IndexError:
+            await ctx.send('Invalid job. Proper job names are "NIN", "COR", etc.')
