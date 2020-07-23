@@ -48,6 +48,7 @@ item_names = init_item_names()
 
 
 def format_item_string(item):
+    item = item.lower()
     item = item.split(' ')
     i = 0
     while i < len(item):
@@ -144,7 +145,7 @@ def build_bazaar_embed(item_name, exist_flag):
 
     if ah_info == '[]':
         return discord.Embed(title='No entries found.')
-    
+
     ah_info = ast.literal_eval(ah_info)
     b_info = []
     embed = discord.Embed(title=embed_title, description='', color=0x00dd00)
