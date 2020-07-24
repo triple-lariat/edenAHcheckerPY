@@ -3593,8 +3593,6 @@ centurions_sword
 centurions_visor
 ceremonial_dagger
 cerulean_pendant
-chapuli_arrow
-chatoyant_staff
 checkered_scarf
 chivalrous_chain
 claymore_grip
@@ -4568,8 +4566,6 @@ viking_axe
 viking_shield
 vir_subligar
 vivid_strap
-voay_staff_-1
-voay_sword_-1
 vodun_mace
 vulcans_ring
 walkure_mask
@@ -4674,18 +4670,6 @@ aput_mantle_+1
 aquilos_staff
 arachne_obi_+1
 aram
-arasy_axe_+1
-arasy_bow_+1
-arasy_claymore_+1
-arasy_gun_+1
-arasy_knife_+1
-arasy_lance_+1
-arasy_rod_+1
-arasy_sainti_+1
-arasy_scythe_+1
-arasy_staff_+1
-arasy_sword_+1
-arasy_tabar_+1
 arbalest_+1
 archmages_staff
 areion_boots_+1
@@ -9866,3 +9850,4 @@ raise_ii_rod
 raise_rod
 root_sabots
 sophia_ring
+hickory_lumber
