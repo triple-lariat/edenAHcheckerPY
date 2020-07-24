@@ -43,7 +43,7 @@ async def on_ready():
 
 @bot.event
 async def on_command_error(ctx, exception):
-    if not track_exceptions:
+    if track_exceptions:
         if isinstance(exception, commands.CommandNotFound):
             pass
         elif isinstance(exception, discord.Forbidden):
