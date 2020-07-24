@@ -151,18 +151,18 @@ def build_bazaar_embed(item_name):
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/bazaar'
     ah_info = r.get(url).text
 
-    if ah_info == '[]':
-        return discord.Embed(title=embed_title, description='No entries found.')
-
     ah_info = ast.literal_eval(ah_info)
     b_info = []
-    embed = discord.Embed(title=embed_title, description='', color=0x00dd00)
+
     for entry in ah_info:
         if not (entry['bazaar'] == 99999999):
             b_info.append([entry['charname'], entry['bazaar']])
 
+    if not b_info:
+        return discord.Embed(title=embed_title, description='No entries found.')
     b_info = condense(b_info)
 
+    embed = discord.Embed(title=embed_title, description='', color=0x00dd00)
     for entry in b_info:
         embed.add_field(name=entry[0],
                         value=f"\n**{entry[1]}g** x{entry[2]}",
