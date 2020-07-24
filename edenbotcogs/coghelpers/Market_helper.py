@@ -35,10 +35,10 @@ item_prefixes = [
 
 
 def init_item_names():
-    csv = open('./data/item_names_and_ids.csv', 'r')
+    csv = open('./data/market_items.csv', 'r')
     item_info = []
     for line in csv:
-        item_info.append(line.split(',')[1].rstrip())
+        item_info.append(line.rstrip())
 
     csv.close()
     return item_info
@@ -68,33 +68,43 @@ def get_ET_timestamp(unix_ts):
     return ET_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
-def check_item(item_name, recursive_flag):
-    if item_name not in item_names:
-        if recursive_flag:
-            return [False, 'false', '']
-        return check_item_prefixes(item_name)
+def check_item(item_name):
+    # returns (name, stack_flag, additional_results)
+    stack_flag = 'false'
 
+    matches = [x for x in item_names if item_name in x]
+    if len(matches) == 1:
+        item_name = matches[0]
+    elif item_name not in matches:
+        item_name = check_prefixes(item_name)
+
+    if item_name:
+        stack_flag = check_stack_flag(item_name)
+
+    return item_name, stack_flag, matches
+
+
+def check_prefixes(item_stub):
+    overall_matches = []
+    for prefix in item_prefixes:
+        matches = search_item(prefix + item_stub)
+        if len(matches) == 1:
+            overall_matches.append(matches[0])
+    if len(overall_matches) == 1:
+        return overall_matches[0]
+    return ''
+
+
+def check_stack_flag(item_name):
     check_url = f'http://www.classicffxi.com/api/v1/items/{item_name}'
     check_page = r.get(check_url).text
-    if check_page == '':
-        page_exist = False
-        is_stackable = 'false'
-    else:
-        page_exist = True
-        is_stackable = check_page.split(',')[1][11:]
-    return [page_exist, is_stackable, '']
+    is_stack = check_page.split(',')[1][11:]
+    return is_stack
 
 
-def check_item_prefixes(item):
-    i = 0
-    while i < len(item_prefixes):
-        prefix = item_prefixes[i]
-        item_exists = check_item(prefix + item, True)
-        if item_exists[0]:
-            item_exists[2] = prefix
-            return item_exists
-        i += 1
-    return (False, 'false', '')
+def search_item(item_stub):
+    matches = [x for x in item_names if item_stub in x]
+    return matches
 
 
 def condense(info_list):
@@ -108,21 +118,20 @@ def condense(info_list):
     df = df.drop_duplicates()
     df = df.values.tolist()
 
-    # adds number of occurences to list
+    # adds number of occurrences to list
     for i in range(len(df)):
         df[i].append(dupes[i])
     return df
 
 
-def build_AH_embed(item_name, exist_flag, stack_flag):
+def build_AH_embed(item_name, stack_flag):
     embed_title = format_name(item_name)
-    if not exist_flag:
-        return discord.Embed(title='Invalid item name given.')
+
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/ah?stack={stack_flag}'
     ah_info = r.get(url).text
 
     if ah_info == '[]':
-        return discord.Embed(title='No entries found.')
+        return discord.Embed(title=embed_title, description='No entries found.')
 
     ah_info = ast.literal_eval(ah_info)
     embed = discord.Embed(title=embed_title, description='', color=0x00ff00)
@@ -136,25 +145,24 @@ def build_AH_embed(item_name, exist_flag, stack_flag):
     return embed
 
 
-def build_bazaar_embed(item_name, exist_flag):
+def build_bazaar_embed(item_name):
     embed_title = format_name(item_name)
-    if exist_flag == 'false':
-        return discord.Embed(title='Invalid item name given.')
+
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/bazaar'
     ah_info = r.get(url).text
 
-    if ah_info == '[]':
-        return discord.Embed(title='No entries found.')
-
     ah_info = ast.literal_eval(ah_info)
     b_info = []
-    embed = discord.Embed(title=embed_title, description='', color=0x00dd00)
+
     for entry in ah_info:
         if not (entry['bazaar'] == 99999999):
             b_info.append([entry['charname'], entry['bazaar']])
 
+    if not b_info:
+        return discord.Embed(title=embed_title, description='No entries found.')
     b_info = condense(b_info)
 
+    embed = discord.Embed(title=embed_title, description='', color=0x00dd00)
     for entry in b_info:
         embed.add_field(name=entry[0],
                         value=f"\n**{entry[1]}g** x{entry[2]}",
