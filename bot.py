@@ -49,7 +49,8 @@ async def on_command_error(ctx, exception):
         elif isinstance(exception, discord.Forbidden):
             pass
         elif isinstance(exception, commands.MissingRequiredArgument):
-            await ctx.send(f'Arguments must be provided to use this command {ctx.author.mention}!')
+            await ctx.send(f'Arguments must be provided to use this command {ctx.author.mention}!\n' +
+                           'Use !help [command] for more info.')
         print(f'Exception of {ctx.command} in {ctx.guild}: {exception}')
 
 @bot.command(hidden=True)
