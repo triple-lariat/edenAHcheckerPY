@@ -59,8 +59,11 @@ class Misc(commands.Cog):
 
             if not check_job_exist(job):
                 raise IndexError
-            
-            level = int(args[1])
+
+            if len(args) > 1:
+                level = int(args[1])
+            else:
+                level = 0
 
             if level > 75 or level < 1:
                 raise ValueError
