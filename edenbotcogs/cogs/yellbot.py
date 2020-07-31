@@ -72,7 +72,6 @@ class yell_log(commands.Cog):
                       ' Either no channels are registered or the site is down.')
                 # wait an addition 30 sec when server is possibly down
                 await asyncio.sleep(30)
-        except Exception:
+        except IndexError:
             print('Background task raised exception')
             print(sys.exc_info())
-            raise
