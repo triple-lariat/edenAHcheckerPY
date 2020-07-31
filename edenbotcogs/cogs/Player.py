@@ -63,3 +63,4 @@ class Player(commands.Cog):
         activity_write.close()
 
         self.most_recent_activity = activity_dict
+        print('Successfully logged player activity.')
