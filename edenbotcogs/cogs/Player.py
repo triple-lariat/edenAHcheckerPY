@@ -30,3 +30,7 @@ class Player(commands.Cog):
             await ctx.send(embed=build_crafts_embed(message, crafts))
         else:
             await ctx.send('Player not found.')
+
+    @commands.command()
+    async def active(self, ctx, message: str):
+        await ctx.send(get_player_activity(message))

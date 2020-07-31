@@ -53,6 +53,7 @@ async def on_command_error(ctx, exception):
                            'Use !help [command] for more info.')
         print(f'Exception of {ctx.command} in {ctx.guild}: {exception}')
 
+
 @bot.command(hidden=True)
 async def ping(ctx):
     await ctx.send('pong')

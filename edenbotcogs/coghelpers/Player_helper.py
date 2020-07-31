@@ -180,6 +180,11 @@ def get_player_crafts(player):
     return craft_info
 
 
+def get_player_activity(player):
+    url = char_url + player + '/ah'
+    return 'dummy'
+
+
 def build_player_info_embed(player, p_info):
     embed = discord.Embed(title=format_name(player))
     ranks = f"San d'Oria: {p_info['ranks']['sandoria']}\n" \
