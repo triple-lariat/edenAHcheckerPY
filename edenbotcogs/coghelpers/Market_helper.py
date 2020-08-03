@@ -140,7 +140,7 @@ def build_AH_embed(item_name, stack_flag):
         sell_time = get_ET_timestamp(entry['sell_date'])
         embed.add_field(name=sell_time,
                         value=entry['seller_name'] + ' -> ' +
-                              entry['buyer_name'] + f"\n**{entry['sale']}g**",
+                              entry['buyer_name'] + f"\n**{entry['sale']:,}g**",
                         inline=True)
     return embed
 
@@ -165,6 +165,6 @@ def build_bazaar_embed(item_name):
     embed = discord.Embed(title=embed_title, description='', color=0x00dd00)
     for entry in b_info:
         embed.add_field(name=entry[0],
-                        value=f"\n**{entry[1]}g** x{entry[2]}",
+                        value=f"\n**{entry[1]:,}g** x{entry[2]}",
                         inline=True)
     return embed
