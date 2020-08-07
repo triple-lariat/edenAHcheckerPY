@@ -5,11 +5,13 @@
 from discord.ext import commands
 from edenbotcogs.coghelpers.Timers_helper import *
 
+
 class Timers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
     async def clock(self, ctx):
-        v = get_vana_time()
-        await ctx.send(f'{get_vana_ymd(v)} - {get_vana_hms(v)} - {get_vana_week_day(v)} ... moon:{get_moon_phase()}')
+        '''Gives the current Vana'diel time, day, and moon phase.
+        Usage: !clock'''
+        await ctx.send(embed=build_clock_embed())

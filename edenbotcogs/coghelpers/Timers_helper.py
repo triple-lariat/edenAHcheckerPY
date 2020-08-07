@@ -6,14 +6,14 @@
 # Extra special thanks to them for working out the math for all of this!
 # Source: http://www.pyogenes.com/ffxi/timer/v2.html
 
-from datetime import date, datetime
+import discord.embeds
 from time import time
 from math import floor
 
-base_datetime = 1024844400000.0 # 1022166000000.0
+base_datetime = 1024844400000.0  # 1022166000000.0
 base_moon_datetime = 1074997872000.0
 base_week_datetime = 1075281264000.0
-phase_name = [
+phase_name = (
     'Full Moon',
     'Waning Gibbous',
     'Last Quarter',
@@ -22,8 +22,8 @@ phase_name = [
     'Waxing Crescent',
     'First Quarter',
     'Waxing Gibbous'
-]
-week_day = [
+)
+week_day = (
     'Firesday',
     'Earthsday',
     'Watersday',
@@ -32,7 +32,17 @@ week_day = [
     'Lightningday',
     'Lightsday',
     'Darksday'
-]
+)
+day_color = (
+    0xDD000,
+    0xAAAA00,
+    0x0000DD,
+    0x00AA22,
+    0x7799FF,
+    0xAA00AA,
+    0xAAAAAA,
+    0x333333
+)
 
 game_day_ms = (24 * 60 * 60 * 1000 / 25.0)  # milliseconds in a game day
 real_day_ms = (24 * 60 * 60 * 1000.0)  # milliseconds in a real day
@@ -48,7 +58,24 @@ def get_moon_phase():
     now = time() * 1000  # current time in ms
     moon_days = (floor((now - base_moon_datetime) / game_day_ms)) % 84
     moon_percent = - round((42 - moon_days) / 42 * 100)
-    return moon_percent
+
+    if moon_percent <= -94 or moon_percent >= 90:
+        return phase_name[0], abs(moon_percent)
+    elif -93 <= moon_percent <= -62:
+        return phase_name[1], abs(moon_percent)
+    elif -61 <= moon_percent <= -41:
+        return phase_name[2], abs(moon_percent)
+    elif -40 <= moon_percent <= -11:
+        return phase_name[3], abs(moon_percent)
+    elif -10 <= moon_percent <= 6:
+        return phase_name[4], abs(moon_percent)
+    elif 7 <= moon_percent <= 36:
+        return phase_name[5], abs(moon_percent)
+    elif 37 <= moon_percent <= 56:
+        return phase_name[6], abs(moon_percent)
+    else:
+        return phase_name[7], abs(moon_percent)
+
 
 def get_vana_ymd(vana_date):
     vana_year = floor(vana_date / (360 * real_day_ms))
@@ -98,4 +125,18 @@ def get_vana_hms(vana_date):
 
 def get_vana_week_day(vana_date):
     vana_week_day = floor((vana_date % (8 * real_day_ms)) / real_day_ms)
-    return week_day[vana_week_day]
+    return week_day[vana_week_day], day_color[vana_week_day]
+
+
+def build_clock_embed():
+    moon = get_moon_phase()
+    vana_date = get_vana_time()
+    ymd = get_vana_ymd(vana_date)
+    hms = get_vana_hms(vana_date)
+    day = get_vana_week_day(vana_date)
+
+    clock_embed = discord.Embed(title=f'{ymd[0]}-{ymd[1]}-{ymd[2]}', color=day[1])
+    clock_embed.add_field(name='Time(HMS)', value=f'{hms[0]}:{hms[1]}:{hms[2]}')
+    clock_embed.add_field(name='Day', value=day[0])
+    clock_embed.add_field(name='Moon', value=f'{moon[0]} {moon[1]}%')
+    return clock_embed
