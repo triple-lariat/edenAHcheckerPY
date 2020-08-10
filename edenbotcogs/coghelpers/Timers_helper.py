@@ -58,14 +58,14 @@ game_day_ms = (24 * 60 * 60 * 1000 / 25.0)  # milliseconds in a game day
 real_day_ms = (24 * 60 * 60 * 1000.0)  # milliseconds in a real day
 
 
-def get_vana_time(now = None):
+def get_vana_time(now=None):
     if now is None:
         now = time() * 1000  # current time in ms
     vana_date = (((898 * 360) + 30) * real_day_ms) + (now - base_datetime) * 25
     return vana_date
 
 
-def get_moon_phase(now = None):
+def get_moon_phase(now=None):
     if now is None:
         now = time() * 1000  # current time in ms
     moon_days = (floor((now - base_moon_datetime) / game_day_ms)) % 84
@@ -156,14 +156,18 @@ def build_clock_embed():
 
 def build_calendar():
     offset = time() * 1000
-    days = []
+    calendar_embed = discord.Embed(title='\u200b')
+
     for day in range(26):
         offset_vana_time = get_vana_time(offset)
-        moon = get_moon_phase(offset)
-        day_info = [get_vana_ymd(offset_vana_time)[1:], moon, get_vana_week_day(offset_vana_time)]
-        days.append(day_info)
-        offset += game_day_ms
-    calendar_embed = discord.Embed(title='placeholder')
-    for day in days:
-        calendar_embed.add_field(name=f'{day[0][0]}/{day[0][1]}', value=f'{day[1][2]} {day[1][1]}%\n{day[2]}')
+
+        moon_info = get_moon_phase(offset)
+        date = get_vana_ymd(offset_vana_time)[1:]  # get just month and day for calendar
+        day_of_week = get_vana_week_day(offset_vana_time)
+
+        calendar_embed.add_field(name=f'{date[0]}/{date[1]}',
+                                 value=f'{day_of_week}\n{moon_info[2]} {moon_info[0]} {moon_info[1]}%')
+
+        offset += game_day_ms  # add amount of time in a game day to get next day's info
+
     return calendar_embed
