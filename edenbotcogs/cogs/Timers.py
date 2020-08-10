@@ -21,3 +21,11 @@ class Timers(commands.Cog):
         '''Gives info about the next 25 Vana'diel days.
         Usage: !calendar'''
         await ctx.send(embed=build_calendar())
+
+    @commands.command()
+    async def rse(self, ctx, race: str = ''):
+        '''Gives RSE start time, location, and end time if a race is provided.
+        Usage: !rse [humem|humef|elvaanm|elvaanf|tarum|taruf|mithra|galka]
+        !rse with no arguments gives the next few RSE weeks'''
+        race = race.lower()
+        await ctx.send(embed=build_rse_embed(race))
