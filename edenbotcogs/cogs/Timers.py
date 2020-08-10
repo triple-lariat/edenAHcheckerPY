@@ -18,4 +18,6 @@ class Timers(commands.Cog):
 
     @commands.command()
     async def calendar(self, ctx):
+        '''Gives info about the next 25 Vana'diel days.
+        Usage: !calendar'''
         await ctx.send(embed=build_calendar())
