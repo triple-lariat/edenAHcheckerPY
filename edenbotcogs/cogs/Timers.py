@@ -15,3 +15,7 @@ class Timers(commands.Cog):
         '''Gives the current Vana'diel time, day, and moon phase.
         Usage: !clock'''
         await ctx.send(embed=build_clock_embed())
+
+    @commands.command()
+    async def calendar(self, ctx):
+        await ctx.send(embed=build_calendar())
