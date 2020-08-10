@@ -23,6 +23,16 @@ phase_name = (
     'First Quarter',
     'Waxing Gibbous'
 )
+emote_moon = (
+    ':full_moon:',
+    ':waning_gibbous_moon:',
+    ':last_quarter_moon:',
+    ':waning_crescent_moon:',
+    ':new_moon:',
+    ':waxing_crescent_moon:',
+    ':first_quarter_moon:',
+    ':waxing_gibbous_moon:'
+)
 week_day = (
     'Firesday',
     'Earthsday',
@@ -48,33 +58,35 @@ game_day_ms = (24 * 60 * 60 * 1000 / 25.0)  # milliseconds in a game day
 real_day_ms = (24 * 60 * 60 * 1000.0)  # milliseconds in a real day
 
 
-def get_vana_time():
-    now = time() * 1000  # current time in ms
+def get_vana_time(now = None):
+    if now is None:
+        now = time() * 1000  # current time in ms
     vana_date = (((898 * 360) + 30) * real_day_ms) + (now - base_datetime) * 25
     return vana_date
 
 
-def get_moon_phase():
-    now = time() * 1000  # current time in ms
+def get_moon_phase(now = None):
+    if now is None:
+        now = time() * 1000  # current time in ms
     moon_days = (floor((now - base_moon_datetime) / game_day_ms)) % 84
     moon_percent = - round((42 - moon_days) / 42 * 100)
 
     if moon_percent <= -94 or moon_percent >= 90:
-        return phase_name[0], abs(moon_percent)
+        return phase_name[0], abs(moon_percent), emote_moon[0]
     elif -93 <= moon_percent <= -62:
-        return phase_name[1], abs(moon_percent)
+        return phase_name[1], abs(moon_percent), emote_moon[1]
     elif -61 <= moon_percent <= -41:
-        return phase_name[2], abs(moon_percent)
+        return phase_name[2], abs(moon_percent), emote_moon[2]
     elif -40 <= moon_percent <= -11:
-        return phase_name[3], abs(moon_percent)
+        return phase_name[3], abs(moon_percent), emote_moon[3]
     elif -10 <= moon_percent <= 6:
-        return phase_name[4], abs(moon_percent)
+        return phase_name[4], abs(moon_percent), emote_moon[4]
     elif 7 <= moon_percent <= 36:
-        return phase_name[5], abs(moon_percent)
+        return phase_name[5], abs(moon_percent), emote_moon[5]
     elif 37 <= moon_percent <= 56:
-        return phase_name[6], abs(moon_percent)
+        return phase_name[6], abs(moon_percent), emote_moon[6]
     else:
-        return phase_name[7], abs(moon_percent)
+        return phase_name[7], abs(moon_percent), emote_moon[7]
 
 
 def get_vana_ymd(vana_date):
@@ -138,5 +150,20 @@ def build_clock_embed():
     clock_embed = discord.Embed(title=f'{ymd[0]}-{ymd[1]}-{ymd[2]}', color=day[1])
     clock_embed.add_field(name='Time(HMS)', value=f'{hms[0]}:{hms[1]}:{hms[2]}')
     clock_embed.add_field(name='Day', value=day[0])
-    clock_embed.add_field(name='Moon', value=f'{moon[0]} {moon[1]}%')
+    clock_embed.add_field(name=f'Moon {moon[2]}', value=f'{moon[0]} {moon[1]}%')
     return clock_embed
+
+
+def build_calendar():
+    offset = time() * 1000
+    days = []
+    for day in range(30):
+        offset_vana_time = get_vana_time(offset)
+        moon = get_moon_phase(offset)
+        day_info = [get_vana_ymd(offset_vana_time)[1:], moon, get_vana_week_day(offset_vana_time)]
+        days.append(day_info)
+        offset += game_day_ms
+    calendar_embed = discord.Embed(title='placeholder')
+    for day in days:
+        calendar_embed.add_field(name=f'{day[0][0]}/{day[0][1]}', value=f'{day[1]}\n{day[2]}')
+    return calendar_embed
