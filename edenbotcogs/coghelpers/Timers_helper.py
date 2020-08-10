@@ -157,7 +157,7 @@ def build_clock_embed():
 def build_calendar():
     offset = time() * 1000
     days = []
-    for day in range(30):
+    for day in range(26):
         offset_vana_time = get_vana_time(offset)
         moon = get_moon_phase(offset)
         day_info = [get_vana_ymd(offset_vana_time)[1:], moon, get_vana_week_day(offset_vana_time)]
@@ -165,5 +165,5 @@ def build_calendar():
         offset += game_day_ms
     calendar_embed = discord.Embed(title='placeholder')
     for day in days:
-        calendar_embed.add_field(name=f'{day[0][0]}/{day[0][1]}', value=f'{day[1]}\n{day[2]}')
+        calendar_embed.add_field(name=f'{day[0][0]}/{day[0][1]}', value=f'{day[1][2]} {day[1][1]}%\n{day[2]}')
     return calendar_embed
