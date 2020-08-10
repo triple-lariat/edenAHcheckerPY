@@ -217,6 +217,7 @@ def check_valid_race(race):
     except KeyError:
         return ''
 
+
 def get_et_timestamp(unix_ts):
     unix_ts = int(unix_ts / 1000)
     tz = timezone('America/New_York')
