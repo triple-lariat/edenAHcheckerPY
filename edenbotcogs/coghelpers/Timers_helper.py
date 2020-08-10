@@ -48,7 +48,7 @@ week_day = (
     'Darksday'
 )
 day_color = (
-    0xDD000,
+    0xDD0000,
     0xAAAA00,
     0x0000DD,
     0x00AA22,
