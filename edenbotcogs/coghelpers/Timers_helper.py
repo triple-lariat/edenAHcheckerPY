@@ -172,6 +172,7 @@ def get_vana_week_day(vana_date):
 def get_rse(race):
     now = time() * 1000
     rse_info = []
+    race = check_valid_race(race)
 
     if race == '':
         for i in range(4):
@@ -208,6 +209,13 @@ def get_rse(race):
 
         return rse_info
 
+
+def check_valid_race(race):
+    try:
+        race_ids[race]
+        return race
+    except KeyError:
+        return ''
 
 def get_et_timestamp(unix_ts):
     unix_ts = int(unix_ts / 1000)
