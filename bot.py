@@ -71,6 +71,7 @@ bot.add_cog(Market.Market(bot))
 bot.add_cog(Misc.Misc(bot))
 bot.add_cog(math_commands.Math(bot))
 bot.add_cog(yellbot.yell_log(bot))
+bot.add_cog(Timers.Timers(bot))
 
 try:
     bot.run(eden_bot_token)
