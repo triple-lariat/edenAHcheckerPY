@@ -13,9 +13,9 @@ from pytz import timezone
 from datetime import datetime
 
 base_datetime = 1024844400000.0
-base_moon_datetime = 1074997872000.0
-base_week_datetime = 1075281264000.0
-rse_datetime = 1075281264000.0
+base_moon_time = 1074997872000.0
+base_week_time = 1075281264000.0
+rse_time = 1075281264000.0
 credit_message = "FFXI time formulas derived from Pyogenes at www.pyogenes.com"
 phase_name = (
     'Full Moon',
@@ -97,7 +97,7 @@ def get_vana_time(now=None):
 def get_moon_phase(now=None):
     if now is None:
         now = time() * 1000  # current time in ms
-    moon_days = (floor((now - base_moon_datetime) / game_day_ms)) % 84
+    moon_days = (floor((now - base_moon_time) / game_day_ms)) % 84
     moon_percent = - round((42 - moon_days) / 42 * 100)
 
     if moon_percent <= -94 or moon_percent >= 90:
@@ -176,8 +176,8 @@ def get_rse(race):
 
     if race == '':
         for i in range(4):
-            elapsed_weeks = floor((now - rse_datetime) / (8 * game_day_ms)) + i
-            rse_start = rse_datetime + (elapsed_weeks * 8 * game_day_ms)
+            elapsed_weeks = floor((now - rse_time) / (8 * game_day_ms)) + i
+            rse_start = rse_time + (elapsed_weeks * 8 * game_day_ms)
 
             # get readable timestamp
             rse_start = get_et_timestamp(rse_start)
@@ -190,20 +190,20 @@ def get_rse(race):
     else:
         offset = race_ids[race] * 8 * game_day_ms
         for i in range(4):
-            elapsed_weeks = floor((now - rse_datetime) / (64 * game_day_ms)) + i
-            elapsed_l_weeks = floor((now - rse_datetime) / (8 * game_day_ms)) + (8 * i)
-            race_offset = race_ids[race] - (elapsed_l_weeks % 8)
+            elapsed_weeks = floor((now - rse_time) / (64 * game_day_ms)) + i
+            elapsed_loc_weeks = floor((now - rse_time) / (8 * game_day_ms)) + (8 * i)
+            race_offset = race_ids[race] - (elapsed_loc_weeks % 8)
 
-            elapsed_l_weeks = elapsed_l_weeks + race_offset
+            elapsed_loc_weeks = elapsed_loc_weeks + race_offset
 
-            rse_start = rse_datetime + (elapsed_weeks * 64 * game_day_ms) + offset
+            rse_start = rse_time + (elapsed_weeks * 64 * game_day_ms) + offset
             rse_end = rse_start + (8 * game_day_ms)
 
             # get readable timestamps
             rse_start = get_et_timestamp(rse_start)
             rse_end = get_et_timestamp(rse_end)
 
-            rse_loc = rse_locations[elapsed_l_weeks % 3]
+            rse_loc = rse_locations[elapsed_loc_weeks % 3]
 
             rse_info.append((rse_start, rse_end, rse_loc))
 
@@ -244,7 +244,7 @@ def build_calendar():
     offset = time() * 1000
     calendar_embed = discord.Embed(title='\u200b')
 
-    for day in range(26):
+    for day in range(25):
         offset_vana_time = get_vana_time(offset)
 
         moon_info = get_moon_phase(offset)
