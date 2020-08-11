@@ -252,7 +252,7 @@ def build_calendar():
         day_of_week = get_vana_week_day(offset_vana_time)
 
         calendar_embed.add_field(name=f'{date[0]}/{date[1]}',
-                                 value=f'{day_of_week}\n{moon_info[2]} {moon_info[0]} {moon_info[1]}%')
+                                 value=f'{day_of_week[0]}\n{moon_info[2]} {moon_info[0]} {moon_info[1]}%')
 
         offset += game_day_ms  # add amount of time in a game day to get next day's info
     calendar_embed.set_footer(text=credit_message)
