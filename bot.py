@@ -15,6 +15,7 @@ handler = logging.FileHandler(filename='edenAHbot.log', encoding='utf-8', mode='
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
+
 # debug var
 track_exceptions = True
 
