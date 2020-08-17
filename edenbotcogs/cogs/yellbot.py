@@ -75,3 +75,4 @@ class yell_log(commands.Cog):
         except IndexError:
             print('Background task raised exception')
             print(sys.exc_info())
+            self.yell_history = [{} for i in range(31)]
