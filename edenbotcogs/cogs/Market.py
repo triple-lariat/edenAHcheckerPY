@@ -25,17 +25,25 @@ class Market(commands.Cog):
         else:
             item_name = separator.join(message)
 
-        # check if the item given actually exists, pass recursive flag as false
-        page_exist = check_item(item_name, False)
-        prefix = page_exist[2]
+        # check if the item given actually exists
+        item_info = check_item(item_name)
 
-        # concat item name and prefix if one was not given by command args
-        item_name = prefix + item_name
+        item_name = item_info[0]
+        additional_results = item_info[2]
 
-        if page_exist[1] == 'false':
-            stack_flag = page_exist[1]
+        if item_info[1] == 'false':
+            stack_flag = item_info[1]
 
-        await ctx.send(embed=build_AH_embed(item_name, page_exist[0], stack_flag))
+        if item_name:
+            await ctx.send(embed=build_AH_embed(item_name, stack_flag))
+        elif additional_results:
+            await ctx.send('No results found, did you mean one of these items?\n')
+            results = ''
+            for item in additional_results[:20]:
+                results += format_name(item) + '\n'
+            await ctx.send(results)
+        else:
+            await ctx.send("I couldn't find any matches for that item, " + ctx.author.mention + '!')
 
     @commands.command(aliases=['bazaar'], category="Market")
     async def b(self, ctx, *, message: str):
@@ -48,11 +56,23 @@ class Market(commands.Cog):
         separator = '_'
         item_name = separator.join(message)
 
-        page_exist = check_item(item_name, False)
+        # check if the item given actually exists
+        item_info = check_item(item_name)
 
-        prefix = page_exist[2]
+        item_name = item_info[0]
+        additional_results = item_info[2]
 
-        # concat item name and prefix if one was not given by command args
-        item_name = prefix + item_name
+        if item_name:
+            await ctx.send(embed=build_bazaar_embed(item_name))
+        elif additional_results:
+            await ctx.send('No results found, did you mean one of these items?\n')
+            results = ''
+            for item in additional_results[:20]:
+                results += format_name(item) + '\n'
+            await ctx.send(results)
+        else:
+            await ctx.send("I couldn't find any matches for that item, " + ctx.author.mention + '!')
 
-        await ctx.send(embed=build_bazaar_embed(item_name, page_exist))
+    @commands.command(hidden=True)
+    async def search(self, ctx, *, message: str):
+        await ctx.send(search_item(message))

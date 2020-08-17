@@ -53,14 +53,19 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def skillcaps(self, ctx, *, message: str):
+        '''Get the skill caps of a job at a given level
+        Usage !skillcaps [job] [level]'''
         args = message.split()
         try:
             job = args[0].lower()
 
             if not check_job_exist(job):
                 raise IndexError
-            
-            level = int(args[1])
+
+            if len(args) > 1:
+                level = int(args[1])
+            else:
+                level = 0
 
             if level > 75 or level < 1:
                 raise ValueError

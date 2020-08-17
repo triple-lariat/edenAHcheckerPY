@@ -15,6 +15,10 @@ handler = logging.FileHandler(filename='edenAHbot.log', encoding='utf-8', mode='
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
+
+# debug var
+track_exceptions = True
+
 # import bot token from separate file 'eden_bot_token.py'
 try:
     from eden_bot_token import eden_bot_token
@@ -40,13 +44,15 @@ async def on_ready():
 
 @bot.event
 async def on_command_error(ctx, exception):
-    if isinstance(exception, commands.CommandNotFound):
-        pass
-    elif isinstance(exception, discord.Forbidden):
-        pass
-    elif isinstance(exception, commands.MissingRequiredArgument):
-        await ctx.send(f'Arguments must be provided to use this command {ctx.author.mention}!')
-    print(f'Exception of {ctx.command} in {ctx.guild}: {exception}')
+    if track_exceptions:
+        if isinstance(exception, commands.CommandNotFound):
+            pass
+        elif isinstance(exception, discord.Forbidden):
+            pass
+        elif isinstance(exception, commands.MissingRequiredArgument):
+            await ctx.send(f'Arguments must be provided to use this command {ctx.author.mention}!\n' +
+                           'Use !help [command] for more info.')
+        print(f'Exception of {ctx.command} in {ctx.guild}: {exception}')
 
 
 @bot.command(hidden=True)
@@ -66,6 +72,7 @@ bot.add_cog(Market.Market(bot))
 bot.add_cog(Misc.Misc(bot))
 bot.add_cog(math_commands.Math(bot))
 bot.add_cog(yellbot.yell_log(bot))
+bot.add_cog(Timers.Timers(bot))
 
 try:
     bot.run(eden_bot_token)

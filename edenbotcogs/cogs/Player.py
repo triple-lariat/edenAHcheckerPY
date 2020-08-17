@@ -2,13 +2,16 @@
 # Any issues you encounter can be posted to https://github.com/triple-lariat/edenAHcheckerPY
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
-from discord.ext import commands
+from discord.ext import commands, tasks
 from edenbotcogs.coghelpers.Player_helper import *
+import pickle
 
 
 class Player(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.track_activity.start()
+        self.most_recent_activity = {}
 
     @commands.command(aliases=['c'])
     async def check(self, ctx, message: str):
@@ -17,7 +20,12 @@ class Player(commands.Cog):
         player_name = format_player_name(message)
         if check_player_exist(player_name):
             p_info = get_player_info(player_name)
-            await ctx.send(embed=build_player_info_embed(player_name, p_info))
+            try:
+                last_online = self.most_recent_activity[format_name(player_name)]
+                last_online = get_readable_timestamp(last_online)
+            except KeyError:
+                last_online = 'At least 7/31'
+            await ctx.send(embed=build_player_info_embed(player_name, p_info, last_online))
         else:
             await ctx.send('Player not found.')
 
@@ -25,8 +33,34 @@ class Player(commands.Cog):
     async def crafts(self, ctx, message: str):
         '''Get a player's crafting levels.
             Usage: !crafts [player]'''
-        if check_player_exist(message):
-            crafts = get_player_crafts(message)
-            await ctx.send(embed=build_crafts_embed(message, crafts))
+        player_name = format_player_name(message)
+        if check_player_exist(player_name):
+            crafts = get_player_crafts(player_name)
+            await ctx.send(embed=build_crafts_embed(player_name, crafts))
         else:
             await ctx.send('Player not found.')
+
+    @tasks.loop(seconds=1800)
+    async def track_activity(self):
+        await self.bot.wait_until_ready()
+
+        try:
+            activity_read = open('eden_player_activity.txt', 'rb')
+            activity_dict = pickle.load(activity_read)
+            activity_read.close()
+        except FileNotFoundError:
+            activity_dict = {}
+
+        current_online = r.get('http://www.classicffxi.com/api/v1/chars?online=true&limit=28000').text
+        current_online = ast.literal_eval(current_online)['chars']
+        log_time = int(time())
+
+        for player in current_online:
+            activity_dict[player['charname']] = log_time
+
+        activity_write = open('eden_player_activity.txt', 'wb')
+        pickle.dump(activity_dict, activity_write)
+        activity_write.close()
+
+        self.most_recent_activity = activity_dict
+        print('Successfully logged player activity.')
