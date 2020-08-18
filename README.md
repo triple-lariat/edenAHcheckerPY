@@ -11,6 +11,4 @@ wish to use that, you should comment out the line ```bot.add_cog(yellbot.yell_lo
 <br><br>
 As of right now, I have only tested the bot with python3.7.4 and python3.6.8<br>
 it should, however, be able to work with python3.6.2+<br><br>
-If, for any reason, you would like to mess around with a bot like this but refuse to use Python<br>
-I have written a more rough and somewhat defunct implementation of bot.py in node.js
-<br>Please contact me if you wish to view it.
+
