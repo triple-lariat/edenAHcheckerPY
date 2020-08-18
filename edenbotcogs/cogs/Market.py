@@ -4,12 +4,16 @@
 
 from discord.ext import commands
 from edenbotcogs.coghelpers.Market_helper import *
+from edenbotcogs.coghelpers.settings_helper import check_channel
+
+ID = 4004
 
 
 class Market(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @check_channel(ID)
     @commands.command()
     async def ah(self, ctx, *, message: str):
         '''Gets the AH entries for an item from the website.
@@ -45,6 +49,7 @@ class Market(commands.Cog):
         else:
             await ctx.send("I couldn't find any matches for that item, " + ctx.author.mention + '!')
 
+    @check_channel(ID)
     @commands.command(aliases=['bazaar'], category="Market")
     async def b(self, ctx, *, message: str):
         '''Gets the bazaar entries for an item. May take a while...
@@ -73,6 +78,7 @@ class Market(commands.Cog):
         else:
             await ctx.send("I couldn't find any matches for that item, " + ctx.author.mention + '!')
 
+    @check_channel(ID)
     @commands.command(hidden=True)
     async def search(self, ctx, *, message: str):
         await ctx.send(search_item(message))
