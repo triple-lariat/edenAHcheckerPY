@@ -18,6 +18,7 @@ class yell_log(commands.Cog):
         self.yell_history = [{} for i in range(31)]
 
     @commands.command()
+    @commands.guild_only()
     async def yells(self, ctx, message: str):
         '''Enables live yell chat log in the channel this command is used in.
                Usage: !yells [on|off]'''
@@ -37,6 +38,11 @@ class yell_log(commands.Cog):
                 await ctx.send(f'{ctx.author.mention}' +
                                ' you must have "manage messages" permissions to use this command!')
             return
+
+    @yells.error
+    async def yells_error(self, ctx, error):
+        if isinstance(error, commands.NoPrivateMessage):
+            await ctx.send("Yell logs can't be sent over DMs!")
 
     @tasks.loop(seconds=40)
     async def yellbot_task(self):

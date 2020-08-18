@@ -3,12 +3,16 @@
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
 from discord.ext import commands
+from edenbotcogs.coghelpers.settings_helper import check_channel
+
+ID = 3003
 
 
 class Math(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @check_channel(ID)
     @commands.command(aliases=['addition'])
     async def add(self, ctx, *, message: str):
         '''Adds numbers
@@ -22,6 +26,7 @@ class Math(commands.Cog):
         except ValueError:
             await ctx.send('Invalid operand(s).')
 
+    @check_channel(ID)
     @commands.command(aliases=['subtract', 'subtraction'])
     async def sub(self, ctx, *, message: str):
         '''Subtracts numbers
@@ -35,6 +40,7 @@ class Math(commands.Cog):
         except ValueError:
             await ctx.send('Invalid operand(s).')
 
+    @check_channel(ID)
     @commands.command(aliases=['divide', 'division'])
     async def div(self, ctx, *, message: str):
         '''Divides numbers
@@ -50,6 +56,7 @@ class Math(commands.Cog):
         except ZeroDivisionError:
             await ctx.send('You cannot divide by zero.')
 
+    @check_channel(ID)
     @commands.command(aliases=['multiply', 'multiplication', 'times', 'multi'])
     async def mult(self, ctx, *, message: str):
         '''Multiplies numbers

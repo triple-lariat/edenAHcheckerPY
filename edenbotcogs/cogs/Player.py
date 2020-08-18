@@ -5,6 +5,9 @@
 from discord.ext import commands, tasks
 from edenbotcogs.coghelpers.Player_helper import *
 import pickle
+from edenbotcogs.coghelpers.settings_helper import check_channel
+
+ID = 2002
 
 
 class Player(commands.Cog):
@@ -13,6 +16,7 @@ class Player(commands.Cog):
         self.track_activity.start()
         self.most_recent_activity = {}
 
+    @check_channel(ID)
     @commands.command(aliases=['c'])
     async def check(self, ctx, message: str):
         '''Gets basic player info.
@@ -29,6 +33,7 @@ class Player(commands.Cog):
         else:
             await ctx.send('Player not found.')
 
+    @check_channel(ID)
     @commands.command(aliases=['craft'])
     async def crafts(self, ctx, message: str):
         '''Get a player's crafting levels.
