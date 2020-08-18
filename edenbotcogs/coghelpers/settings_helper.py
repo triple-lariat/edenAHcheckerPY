@@ -3,6 +3,7 @@
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
 import pickle
+from discord.ext import commands
 
 # command disable flags
 MISC_COMMANDS = 1001
@@ -76,3 +77,11 @@ def enable_command(channel_id, command_flag):
             save_dict()
     except KeyError:
         pass
+
+
+def check_channel(command_id):
+    async def predicate(ctx):
+        if ctx.channel.id in disabled_channels.keys():
+            return command_id not in disabled_channels[ctx.channel.id]
+        return True
+    return commands.check(predicate)
