@@ -13,3 +13,4 @@ data/yell_channels.csv
 .idea/markdown-navigator.xml
 edenAHbot.log
 eden_player_activity.txt
+data/disabled_channels.txt
