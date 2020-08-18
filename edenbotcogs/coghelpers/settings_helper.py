@@ -11,6 +11,14 @@ MATH_COMMANDS = 3003
 MARKET_COMMANDS = 4004
 TIMER_COMMANDS = 5005
 
+command_options = {
+    'misc': MISC_COMMANDS,
+    'player': PLAYER_COMMANDS,
+    'math': MATH_COMMANDS,
+    'market': MARKET_COMMANDS,
+    'timers': TIMER_COMMANDS
+}
+
 
 def initialize_channel_dict():
     try:
@@ -18,9 +26,17 @@ def initialize_channel_dict():
         return pickle.load(channel_file)
     except FileNotFoundError:
         return {}
+    except EOFError:
+        return {}
 
 
 disabled_channels = initialize_channel_dict()
+
+
+def save_dict():  # called when any changes are made to the disabled channels dict
+    channel_file = open('./data/disabled_channels.txt', 'wb')
+    pickle.dump(disabled_channels, channel_file)
+    print('Current disabled channel dictionary written to file!')
 
 
 def disable_all_commands(channel_id):
@@ -32,10 +48,31 @@ def disable_all_commands(channel_id):
         TIMER_COMMANDS
     ]
 
+    save_dict()
+
+
+def enable_all_commands(channel_id):
+    try:
+        del disabled_channels[channel_id]
+        save_dict()
+    except KeyError:
+        pass
+
 
 def disable_command(channel_id, command_flag):
     try:
         if command_flag not in disabled_channels[channel_id]:
             disabled_channels[channel_id].append(command_flag)
+            save_dict()
     except KeyError:
         disabled_channels[channel_id] = [command_flag]
+        save_dict()
+
+
+def enable_command(channel_id, command_flag):
+    try:
+        if command_flag in disabled_channels[channel_id]:
+            disabled_channels[channel_id].remove(command_flag)
+            save_dict()
+    except KeyError:
+        pass
