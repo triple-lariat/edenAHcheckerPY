@@ -8,7 +8,6 @@ import pandas as pd
 import pytz
 import requests as r
 import discord.embeds
-import os
 
 item_prefixes = [
     'piece_of_',
