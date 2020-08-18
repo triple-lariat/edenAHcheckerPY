@@ -14,7 +14,7 @@ class settings(commands.Cog):
     async def disableall(self, ctx):
         '''Disables usage of all commands by anyone without "Manage messages" permissions in the current channel.'''
         disable_all_commands(ctx.channel.id)
-        await ctx.send('All commands have been disabled for this channel!')
+        await ctx.message.add_reaction('✅')
 
     @commands.command(aliases=['disable'])
     @commands.has_permissions(manage_messages=True)
@@ -23,6 +23,7 @@ class settings(commands.Cog):
             message = message.lower()
             flag = command_options[message]
             disable_command(ctx.channel.id, flag)
+            await ctx.message.add_reaction('✅')
         except KeyError:
             await ctx.send('Invalid command category given.')
 
@@ -31,7 +32,7 @@ class settings(commands.Cog):
     async def enableall(self, ctx):
         '''Enables all disabled commands, if any, in the current channel.'''
         enable_all_commands(ctx.channel.id)
-        await ctx.send('All commands have been enabled for this channel!')
+        await ctx.message.add_reaction('✅')
 
     @commands.command(aliases=['enable'])
     @commands.has_permissions(manage_messages=True)
@@ -40,6 +41,7 @@ class settings(commands.Cog):
             message = message.lower()
             flag = command_options[message]
             enable_command(ctx.channel.id, flag)
+            await ctx.message.add_reaction('✅')
         except KeyError:
             await ctx.send('Invalid command category given.')
 
