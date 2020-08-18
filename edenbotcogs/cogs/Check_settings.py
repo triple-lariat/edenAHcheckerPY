@@ -2,14 +2,12 @@
 # Any issues you encounter can be posted to https://github.com/triple-lariat/edenAHcheckerPY
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
-from discord.ext import commands
 from edenbotcogs.coghelpers.settings_helper import *
 
 
 class settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
@@ -18,7 +16,7 @@ class settings(commands.Cog):
         disable_all_commands(ctx.channel.id)
         await ctx.send('All commands have been disabled for this channel!')
 
-    @commands.command()
+    @commands.command(aliases=['disable'])
     @commands.has_permissions(manage_messages=True)
     async def disablecommand(self, ctx, message: str):
         try:
@@ -35,7 +33,7 @@ class settings(commands.Cog):
         enable_all_commands(ctx.channel.id)
         await ctx.send('All commands have been enabled for this channel!')
 
-    @commands.command()
+    @commands.command(aliases=['enable'])
     @commands.has_permissions(manage_messages=True)
     async def enablecommand(self, ctx, message: str):
         try:
@@ -45,7 +43,7 @@ class settings(commands.Cog):
         except KeyError:
             await ctx.send('Invalid command category given.')
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=['disablelist', 'disabledlist'])
     @commands.has_permissions(administrator=True)
     async def listdisabled(self, ctx):
         await ctx.send(disabled_channels)
