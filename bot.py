@@ -67,6 +67,7 @@ async def args(ctx, *, message: str):
         await ctx.send(message[item[0]])
 
 # add created cogs
+bot.add_cog(Check_settings.settings(bot))
 bot.add_cog(Player.Player(bot))
 bot.add_cog(Market.Market(bot))
 bot.add_cog(Misc.Misc(bot))
