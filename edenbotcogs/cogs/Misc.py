@@ -4,12 +4,16 @@
 
 from discord.ext import commands
 from edenbotcogs.coghelpers.Misc_helper import *
+from edenbotcogs.coghelpers.settings_helper import check_channel
+
+ID = 1001
 
 
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @check_channel(ID)
     @commands.command(aliases=['exp'])
     async def tnl(self, ctx, *, message: str):
         '''Get the exp from the beginning of a certain level to the end of another.
@@ -29,6 +33,7 @@ class Misc(commands.Cog):
         except IndexError:
             await ctx.send('Must provide two levels.')
 
+    @check_channel(ID)
     @commands.command()
     async def getid(self, ctx, *, message: str):
         '''Get the item ID and homepointxi link for any item
@@ -51,6 +56,7 @@ class Misc(commands.Cog):
             await ctx.channel.send('No item found')
         csv.close()
 
+    @check_channel(ID)
     @commands.command()
     async def skillcaps(self, ctx, *, message: str):
         '''Get the skill caps of a job at a given level
