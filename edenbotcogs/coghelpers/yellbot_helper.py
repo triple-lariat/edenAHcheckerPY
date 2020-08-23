@@ -7,6 +7,7 @@ from datetime import datetime
 import pytz
 import requests as r
 import ast
+from edenbotcogs.coghelpers.Timers_helper import get_timezone, server_timezones
 
 yell_url = 'http://classicffxi.com/api/v1/misc/yells'
 
@@ -25,8 +26,8 @@ def get_new_yells(yell_history):
     return list(reversed(yell_info[:displace])), yell_info
 
 
-def yell_formatter(yell):
-    f_yell = yell_date_formatter(yell)
+def yell_formatter(yell, server_id=None):
+    f_yell = yell_date_formatter(yell, server_id)
     name = f_yell['speaker']
     message = f_yell['message']
     # replace unparseable character if given by site
@@ -36,9 +37,9 @@ def yell_formatter(yell):
     return f'[{date}] **{name}**: {message}'
 
 
-def yell_date_formatter(yell):
+def yell_date_formatter(yell, server_id=None):
     formatted = yell.copy()
-    formatted['date'] = get_et_timestamp(yell['date'] / 1000)
+    formatted['date'] = get_timestamp(yell['date'] / 1000, server_id)
     return formatted
 
 
@@ -102,10 +103,15 @@ def check_connection(url):
     return valid_connection
 
 
-def get_et_timestamp(unix_ts):
-    tz = pytz.timezone('America/New_York')
-    et_time = datetime.fromtimestamp(unix_ts, tz)
-    return et_time.strftime('%Y-%m-%d %H:%M:%S')
+def get_timestamp(unix_ts, server_id=None):
+    if server_id:
+        tz = get_timezone(server_id)
+        print(get_timezone(server_id))
+    else:
+        tz = 'US/Eastern'
+    tz = pytz.timezone(tz)
+    human_time = datetime.fromtimestamp(unix_ts, tz)
+    return human_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def get_my_timestamp_now():

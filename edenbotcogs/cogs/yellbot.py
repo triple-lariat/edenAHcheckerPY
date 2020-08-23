@@ -65,6 +65,8 @@ class yell_log(commands.Cog):
                     for channel in channel_ids:
                         try:
                             to_send = self.bot.get_channel(channel)
+                            guild_id = to_send.guild.id
+                            yell_message = yell_formatter(yell, guild_id)
                             await to_send.send(yell_message)
                         except AttributeError:
                             print(sys.exc_info())
@@ -78,7 +80,7 @@ class yell_log(commands.Cog):
                       ' Either no channels are registered or the site is down.')
                 # wait an addition 30 sec when server is possibly down
                 await asyncio.sleep(30)
-        except IndexError:
+        except Exception:
             print('Background task raised exception')
             print(sys.exc_info())
             self.yell_history = [{} for i in range(31)]
