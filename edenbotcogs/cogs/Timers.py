@@ -15,16 +15,19 @@ class Timers(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def timezone(self, ctx, message: str):
+    async def timezone(self, ctx, timezone: str = ''):
         '''Sets the time zone for printed times.
-        Usage: !timezone [time zone]
+        Usage: !timezone [time zone] or nothing to get currently set timezone
         Valid US timezones: Central, Arizona, Eastern, Pacific, Mountain'''
-        tz = f'US/{message}'
         server_id = ctx.message.guild.id
-        if set_timezone(tz, server_id):
-            await ctx.message.add_reaction('✅')
+        if timezone:
+            tz = f'US/{timezone}'
+            if set_timezone(tz, server_id):
+                await ctx.message.add_reaction('✅')
+            else:
+                await ctx.send('Timezone change failed! Did you enter a valid timezone?')
         else:
-            await ctx.send('Timezone change failed! Did you enter a valid timezone?')
+            await ctx.send(server_timezones[server_id])
 
 
     @check_channel(ID)
