@@ -275,8 +275,8 @@ def get_timestamp(unix_ts, server_id):
     tz = get_timezone(server_id)
     unix_ts = int(unix_ts / 1000)
     tz = timezone(tz)
-    et_time = datetime.fromtimestamp(unix_ts, tz)
-    return et_time.strftime('%m-%d %H:%M:%S')
+    human_time = datetime.fromtimestamp(unix_ts, tz)
+    return human_time.strftime('%m-%d %H:%M:%S')
 
 
 def build_clock_embed():
