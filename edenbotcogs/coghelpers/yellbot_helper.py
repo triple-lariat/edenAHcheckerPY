@@ -106,7 +106,6 @@ def check_connection(url):
 def get_timestamp(unix_ts, server_id=None):
     if server_id:
         tz = get_timezone(server_id)
-        print(get_timezone(server_id))
     else:
         tz = 'US/Eastern'
     tz = pytz.timezone(tz)

@@ -2,6 +2,7 @@
 # Any issues you encounter can be posted to https://github.com/triple-lariat/edenAHcheckerPY
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
+from time import time
 from discord.ext import commands, tasks
 from edenbotcogs.coghelpers.Player_helper import *
 import pickle
@@ -21,15 +22,16 @@ class Player(commands.Cog):
     async def check(self, ctx, message: str):
         '''Gets basic player info.
             Usage: !check [player]'''
+        server_id = ctx.message.guild.id
         player_name = format_player_name(message)
         if check_player_exist(player_name):
             p_info = get_player_info(player_name)
             try:
                 last_online = self.most_recent_activity[format_name(player_name)]
-                last_online = get_readable_timestamp(last_online)
+                last_online = get_readable_timestamp(last_online, server_id)
             except KeyError:
                 last_online = 'At least 7/31'
-            await ctx.send(embed=build_player_info_embed(player_name, p_info, last_online))
+            await ctx.send(embed=build_player_info_embed(player_name, p_info, last_online, server_id))
         else:
             await ctx.send('Player not found.')
 

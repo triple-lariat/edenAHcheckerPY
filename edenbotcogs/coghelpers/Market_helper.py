@@ -8,6 +8,7 @@ import pandas as pd
 import pytz
 import requests as r
 import discord.embeds
+from edenbotcogs.coghelpers.Timers_helper import get_timezone, server_timezones
 
 item_prefixes = [
     'piece_of_',
@@ -53,7 +54,6 @@ def format_item_string(item):
     while i < len(item):
         item[i] = re.sub(r"[!@#$%^&*']+", '', item[i])
         i += 1
-    print(item)
     return item
 
 
@@ -61,10 +61,14 @@ def format_name(item_name):
     return item_name.replace('_', ' ').title()
 
 
-def get_ET_timestamp(unix_ts):
-    tz = pytz.timezone('America/New_York')
-    ET_time = datetime.fromtimestamp(unix_ts, tz)
-    return ET_time.strftime('%Y-%m-%d %H:%M:%S')
+def get_timestamp(unix_ts, server_id=None):
+    if server_id:
+        tz = get_timezone(server_id)
+    else:
+        tz = 'US/Eastern'
+    tz = pytz.timezone(tz)
+    human_time = datetime.fromtimestamp(unix_ts, tz)
+    return human_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def check_item(item_name):
@@ -123,7 +127,7 @@ def condense(info_list):
     return df
 
 
-def build_AH_embed(item_name, stack_flag):
+def build_AH_embed(item_name, stack_flag, server_id):
     embed_title = format_name(item_name)
 
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/ah?stack={stack_flag}'
@@ -136,11 +140,13 @@ def build_AH_embed(item_name, stack_flag):
     embed = discord.Embed(title=embed_title, description='', color=0x00ff00)
     for entry in ah_info:
         # convert given unix timestamp to initialized timezone
-        sell_time = get_ET_timestamp(entry['sell_date'])
+        sell_time = get_timestamp(entry['sell_date'], server_id)
         embed.add_field(name=sell_time,
                         value=entry['seller_name'] + ' -> ' +
                               entry['buyer_name'] + f"\n**{entry['sale']:,}g**",
                         inline=True)
+
+    embed.set_footer(text=f'Times in {get_timezone(server_id)}.')
     return embed
 
 
