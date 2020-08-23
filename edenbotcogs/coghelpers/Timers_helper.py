@@ -9,7 +9,7 @@
 import discord.embeds
 from time import time
 from math import floor
-from pytz import timezone
+from pytz import timezone, exceptions
 from datetime import datetime
 
 base_datetime = 1024844400000.0
@@ -86,6 +86,44 @@ rse_locations = (
 game_day_ms = (24 * 60 * 60 * 1000 / 25.0)  # milliseconds in a game day
 real_day_ms = (24 * 60 * 60 * 1000.0)  # milliseconds in a real day
 
+server_timezones = {}
+try:
+    server_list = open('./data/timezones.csv', 'r')
+    for line in server_list:
+        line = line.rstrip()
+        line = line.split(',')
+        server = int(line[0])
+        t_zone = line[1]
+        server_timezones[server] = t_zone
+    server_list.close()
+except FileNotFoundError:
+    pass
+
+
+def set_timezone(tz, server_id):
+    try:
+        # check if valid timezone provided
+        timezone(tz)
+        try:
+            servers = open('./data/timezones.csv', 'r+')
+        except FileNotFoundError:
+            servers = open('./data/timezones.csv', 'w')
+        servers.write(f'{server_id},{tz}\n')
+
+        # immediately add to timezone dict rather than re-reading file written to
+        server_timezones[server_id] = tz
+
+        return True
+    except exceptions.UnknownTimeZoneError:
+        return False
+
+
+def get_timezone(server_id):
+    try:
+        return server_timezones[int(server_id)]
+    except KeyError:
+        return 'US/Eastern'
+
 
 def get_vana_time(now=None):
     if now is None:
@@ -94,10 +132,14 @@ def get_vana_time(now=None):
     return vana_date
 
 
+def get_moon_day(now):
+    return (floor((now - base_moon_time) / game_day_ms)) % 84
+
+
 def get_moon_phase(now=None):
     if now is None:
         now = time() * 1000  # current time in ms
-    moon_days = (floor((now - base_moon_time) / game_day_ms)) % 84
+    moon_days = get_moon_day(now)
     moon_percent = - round((42 - moon_days) / 42 * 100)
 
     if moon_percent <= -94 or moon_percent >= 90:
@@ -116,6 +158,17 @@ def get_moon_phase(now=None):
         return phase_name[6], abs(moon_percent), emote_moon[6]
     else:
         return phase_name[7], abs(moon_percent), emote_moon[7]
+
+
+def get_next_end_moon(moon, server_id):
+    now = time() * 1000
+    full_moon_basis = base_moon_time + (3 * game_day_ms)
+    elapsed = floor((now - full_moon_basis) / (84 * game_day_ms)) + 1
+    full_end = full_moon_basis + (elapsed * 84 * game_day_ms)
+    if moon:
+        return get_timestamp(full_end - 7 * game_day_ms, server_id)
+    else:
+        return get_timestamp(full_end - 49 * game_day_ms, server_id)
 
 
 def get_vana_ymd(vana_date):
@@ -169,7 +222,7 @@ def get_vana_week_day(vana_date):
     return week_day[vana_week_day], day_color[vana_week_day]
 
 
-def get_rse(race):
+def get_rse(race, server_id):
     now = time() * 1000
     rse_info = []
     race = check_valid_race(race)
@@ -180,7 +233,7 @@ def get_rse(race):
             rse_start = rse_time + (elapsed_weeks * 8 * game_day_ms)
 
             # get readable timestamp
-            rse_start = get_et_timestamp(rse_start)
+            rse_start = get_timestamp(rse_start, server_id)
 
             rse_loc = rse_locations[elapsed_weeks % 3]
             rse_info.append((rse_start, race_names[elapsed_weeks % 8], rse_loc))
@@ -200,8 +253,8 @@ def get_rse(race):
             rse_end = rse_start + (8 * game_day_ms)
 
             # get readable timestamps
-            rse_start = get_et_timestamp(rse_start)
-            rse_end = get_et_timestamp(rse_end)
+            rse_start = get_timestamp(rse_start, server_id)
+            rse_end = get_timestamp(rse_end, server_id)
 
             rse_loc = rse_locations[elapsed_loc_weeks % 3]
 
@@ -218,9 +271,10 @@ def check_valid_race(race):
         return ''
 
 
-def get_et_timestamp(unix_ts):
+def get_timestamp(unix_ts, server_id):
+    tz = get_timezone(server_id)
     unix_ts = int(unix_ts / 1000)
-    tz = timezone('America/New_York')
+    tz = timezone(tz)
     et_time = datetime.fromtimestamp(unix_ts, tz)
     return et_time.strftime('%m-%d %H:%M:%S')
 
@@ -259,8 +313,8 @@ def build_calendar():
     return calendar_embed
 
 
-def build_rse_embed(race):
-    rse_info = get_rse(race)
+def build_rse_embed(race, server_id):
+    rse_info = get_rse(race, server_id)
     race_id = race_ids.get(race)
     rse_embed = discord.Embed(title='RSE Calendar ' + race_names.get(race_id, ''))
 

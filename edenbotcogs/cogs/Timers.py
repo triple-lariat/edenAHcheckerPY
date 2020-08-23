@@ -13,6 +13,20 @@ class Timers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def timezone(self, ctx, message: str):
+        '''Sets the time zone for printed times.
+        Usage: !timezone [time zone]
+        Valid US timezones: Central, Arizona, Eastern, Pacific, Mountain'''
+        tz = f'US/{message}'
+        server_id = ctx.message.guild.id
+        if set_timezone(tz, server_id):
+            await ctx.message.add_reaction('✅')
+        else:
+            await ctx.send('Timezone change failed! Did you enter a valid timezone?')
+
+
     @check_channel(ID)
     @commands.command()
     async def clock(self, ctx):
@@ -29,9 +43,23 @@ class Timers(commands.Cog):
 
     @check_channel(ID)
     @commands.command()
+    async def fullmoon(self, ctx):
+        '''Gives the time to next full moon.
+        Usage: !fullmoon'''
+        await ctx.send(get_next_end_moon(True, ctx.message.guild.id))
+
+    @check_channel(ID)
+    @commands.command()
+    async def newmoon(self, ctx):
+        '''Gives the time to next new moon
+        Usage: !newmoon'''
+        await ctx.send(get_next_end_moon(False, ctx.message.guild.id))
+
+    @check_channel(ID)
+    @commands.command()
     async def rse(self, ctx, race: str = ''):
         '''Gives RSE start time, location, and end time if a race is provided.
         Usage: !rse [humem|humef|elvaanm|elvaanf|tarum|taruf|mithra|galka]
         !rse with no arguments gives the next few RSE weeks'''
         race = race.lower()
-        await ctx.send(embed=build_rse_embed(race))
+        await ctx.send(embed=build_rse_embed(race, ctx.message.guild.id))
