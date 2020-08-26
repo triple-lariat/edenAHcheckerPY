@@ -162,13 +162,27 @@ def get_moon_phase(now=None):
 
 def get_next_end_moon(moon, server_id):
     now = time() * 1000
+
     full_moon_basis = base_moon_time + (3 * game_day_ms)
     elapsed = floor((now - full_moon_basis) / (84 * game_day_ms)) + 1
     full_end = full_moon_basis + (elapsed * 84 * game_day_ms)
+
     if moon:
-        return get_timestamp(full_end - 7 * game_day_ms, server_id)
+        moon_start = full_end - 7 * game_day_ms
+        if moon_start < now:  # recalculate with higher offset if given a time in the past
+            elapsed = floor((now - full_moon_basis) / (84 * game_day_ms)) + 2
+            full_end = full_moon_basis + (elapsed * 84 * game_day_ms)
+            moon_start = full_end - 7 * game_day_ms
+
+        return get_timestamp(moon_start, server_id)
     else:
-        return get_timestamp(full_end - 49 * game_day_ms, server_id)
+        moon_start = full_end - 49 * game_day_ms
+        if moon_start < now:  # recalculate with higher offset if given a time in the past
+            elapsed = floor((now - full_moon_basis) / (84 * game_day_ms)) + 2
+            full_end = full_moon_basis + (elapsed * 84 * game_day_ms)
+            moon_start = full_end - 49 * game_day_ms
+
+        return get_timestamp(moon_start, server_id)
 
 
 def get_vana_ymd(vana_date):
