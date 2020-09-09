@@ -14,3 +14,4 @@ data/yell_channels.csv
 edenAHbot.log
 eden_player_activity.txt
 data/disabled_channels.txt
+data/timezones.csv

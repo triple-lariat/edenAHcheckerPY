@@ -9,7 +9,7 @@ import discord.embeds
 import pytz
 import requests as r
 import ast
-from time import time
+from edenbotcogs.coghelpers.Timers_helper import get_timezone
 
 char_url = 'http://classicffxi.com/api/v1/chars/'
 avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.jpg',
@@ -184,7 +184,7 @@ def get_player_crafts(player):
     return craft_info
 
 
-def build_player_info_embed(player, p_info, last_online):
+def build_player_info_embed(player, p_info, last_online, server_id):
     embed = discord.Embed(title=format_name(player))
     ranks = f"San d'Oria: {p_info['ranks']['sandoria']}\n" \
             + f"Bastok:     {p_info['ranks']['bastok']}\n" \
@@ -201,6 +201,7 @@ def build_player_info_embed(player, p_info, last_online):
         embed.add_field(name='Offline since:', value=last_online, inline=False)
     embed.add_field(name='Nation', value=get_nation(p_info['nation']))
     embed.add_field(name='Ranks', value=ranks)
+    embed.set_footer(text=f'Time given in {get_timezone(server_id)}')
 
     return embed
 
@@ -212,7 +213,11 @@ def build_crafts_embed(player, craft_info):
     return embed
 
 
-def get_readable_timestamp(unix_ts):
-    tz = pytz.timezone('America/New_York')
-    et_time = datetime.fromtimestamp(unix_ts, tz)
-    return et_time.strftime('%Y-%m-%d %H:%M:%S')
+def get_readable_timestamp(unix_ts, server_id):
+    if server_id:
+        tz = get_timezone(server_id)
+    else:
+        tz = 'US/Eastern'
+    tz = pytz.timezone(tz)
+    human_time = datetime.fromtimestamp(unix_ts, tz)
+    return human_time.strftime('%Y-%m-%d %H:%M:%S')

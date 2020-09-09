@@ -20,6 +20,9 @@ class Market(commands.Cog):
             Usage: !ah [item name] [y for stack]'''
         # split the arguments given with command into an array
         message = format_item_string(message)
+
+        server_id = ctx.message.guild.id
+
         separator = '_'
         # check whether to look up a stack or single of given item
         stack_flag = 'false'
@@ -39,7 +42,7 @@ class Market(commands.Cog):
             stack_flag = item_info[1]
 
         if item_name:
-            await ctx.send(embed=build_AH_embed(item_name, stack_flag))
+            await ctx.send(embed=build_AH_embed(item_name, stack_flag, server_id))
         elif additional_results:
             await ctx.send('No results found, did you mean one of these items?\n')
             results = ''
