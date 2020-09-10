@@ -184,6 +184,13 @@ def get_player_crafts(player):
     return craft_info
 
 
+def get_player_equip(player):
+    url = char_url + player + '/equip'
+    equip_info = r.get(url).text
+    equip_info = ast.literal_eval(equip_info)
+    return equip_info
+
+
 def build_player_info_embed(player, p_info, last_online, server_id):
     embed = discord.Embed(title=format_name(player))
     ranks = f"San d'Oria: {p_info['ranks']['sandoria']}\n" \

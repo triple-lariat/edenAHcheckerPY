@@ -47,6 +47,16 @@ class Player(commands.Cog):
         else:
             await ctx.send('Player not found.')
 
+    @check_channel(ID)
+    @commands.command()
+    async def equip(self, ctx, name: str):
+        '''Displays a player's equipment.
+            Usage: !equip [player]'''
+        player_name = format_player_name(name)
+        if check_player_exist(player_name):
+            equip = get_player_equip(player_name)
+            await ctx.send(equip)
+
     @tasks.loop(seconds=1800)
     async def track_activity(self):
         await self.bot.wait_until_ready()
