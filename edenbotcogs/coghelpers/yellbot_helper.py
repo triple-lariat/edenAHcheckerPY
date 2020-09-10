@@ -7,6 +7,7 @@ from datetime import datetime
 import pytz
 import requests as r
 import ast
+import re
 from edenbotcogs.coghelpers.Timers_helper import get_timezone, server_timezones
 
 yell_url = 'http://classicffxi.com/api/v1/misc/yells'
@@ -32,9 +33,17 @@ def yell_formatter(yell, server_id=None):
     message = f_yell['message']
     # replace unparseable character if given by site
     message = message.replace('\x85', '')
+    message = escape_markdown(message)
     date = f_yell['date']
 
     return f'[{date}] **{name}**: {message}'
+
+
+# For now this only removes characters that Discord would think is formatting
+# In the long-term will want to find a way to escape special characters
+def escape_markdown(text):
+    escaped = re.sub(r'(\*|_|`|~|\||\\)', '', text)  # escape *, _, `, ~, \, |
+    return escaped
 
 
 def yell_date_formatter(yell, server_id=None):
