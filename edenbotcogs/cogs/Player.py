@@ -55,7 +55,8 @@ class Player(commands.Cog):
         player_name = format_player_name(name)
         if check_player_exist(player_name):
             equip = get_player_equip(player_name)
-            await ctx.send(equip)
+            img = build_equip_visual(equip)
+            await ctx.send(file=discord.File(fp=img, filename="player_equip.png"))
 
     @tasks.loop(seconds=1800)
     async def track_activity(self):
