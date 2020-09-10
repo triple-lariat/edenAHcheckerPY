@@ -10,6 +10,10 @@ import pytz
 import requests as r
 import ast
 from edenbotcogs.coghelpers.Timers_helper import get_timezone
+from PIL import Image
+from io import BytesIO
+from edenbotcogs.coghelpers.Market_helper import format_name
+import urllib.request
 
 char_url = 'http://classicffxi.com/api/v1/chars/'
 avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.jpg',
@@ -140,6 +144,9 @@ avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.j
                tm3a='https://vignette.wikia.nocookie.net/ffxi/images/d/d9/Tm3a.jpg',
                tm2a='https://vignette.wikia.nocookie.net/ffxi/images/f/f0/Tm2a.jpg',
                tm1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d8/Tm1a.jpg')
+base_url = 'https://static.ffxiah.com/images/icon/'
+base_ah_url = 'http://www.classicffxi.com/tools/item/'
+equip_background = 'https://www.ffxiah.com/images/equip_box.gif'
 
 
 def format_player_name(name):
@@ -182,6 +189,95 @@ def get_player_crafts(player):
     craft_info = r.get(url).text
     craft_info = ast.literal_eval(craft_info)
     return craft_info
+
+
+def get_player_equip(player):
+    url = char_url + player + '/equip'
+    equip_info = r.get(url).text
+    equip_info = ast.literal_eval(equip_info)
+    return equip_info
+
+
+def get_equip_ids(equip):
+    ids = []
+    for slot in equip:
+        if 'itemid' in equip[slot]:
+            ids.append(equip[slot]['itemid'])
+        else:
+            ids.append(0)
+    return ids
+
+
+def order_equip_ids(equip_ids):
+    # Order used for in-game equipment menu
+    order = (0, 1, 2, 3, 4, 9, 11, 12, 5, 6, 13, 14, 15, 10, 7, 8)
+    ordered_ids = []
+    for index in order:
+        ordered_ids.append(equip_ids[index])
+
+    return ordered_ids
+
+
+def build_equip_visual(ordered_ids):
+
+    imgs = []
+    for equip_id in ordered_ids:
+        if not equip_id:
+            imgs.append(0)
+        url = base_url + str(equip_id) + '.png'
+        imgs.append(Image.open(urllib.request.urlopen(url)))
+    widths, heights = zip(*(i.size for i in imgs if i))
+    total_width = max(widths) * 4
+    max_height = max(heights) * 4
+
+    new_im = Image.new('RGB', (total_width, max_height))
+    x_offset = 0
+    y_offset = 0
+    x_size = 32
+    y_size = 32
+    counter = 0
+    bg_img = Image.open(urllib.request.urlopen(equip_background))
+    for im in imgs:
+        # background image needs to exist regardless of if the slot if full or not
+        new_im.paste(bg_img, (x_offset, y_offset))
+
+        # only bother adding a top layer item image if an item is equipped
+        if im:
+            new_im.paste(im, (x_offset, y_offset), mask=im)
+            x_offset += x_size
+
+        # move down every 4 slots
+        counter += 1
+        if x_offset == x_size * 4:
+            y_offset += y_size
+            x_offset = 0
+
+    buffer = BytesIO()
+    new_im.save(buffer, 'png')
+    buffer.seek(0)
+
+    return buffer
+
+
+def build_equip_embed(name):
+    equip = get_player_equip(name)
+    equip_ids = get_equip_ids(equip)
+    ordered_ids = order_equip_ids(equip_ids)
+    image = build_equip_visual(ordered_ids)
+
+    file = discord.File(fp=image, filename="player_equip.png")
+    equip_embed = discord.Embed()
+    equip_embed.set_image(url='attachment://player_equip.png')
+
+    for slot in equip:
+        if 'itemid' in equip[slot]:
+            name = equip[slot]["name"]
+            formatted_name = format_name(name)
+            equip_embed.add_field(name=slot, value=f'[{formatted_name}]({base_ah_url + name})')
+        elif 'ls' not in slot:
+            equip_embed.add_field(name=slot, value='None')
+
+    return equip_embed, file
 
 
 def build_player_info_embed(player, p_info, last_online, server_id):
