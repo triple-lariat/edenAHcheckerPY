@@ -229,7 +229,6 @@ def build_equip_visual(equip):
     widths, heights = zip(*(i.size for i in imgs if i))
     total_width = max(widths) * 4
     max_height = max(heights) * 4
-    print(imgs)
 
     new_im = Image.new('RGB', (total_width, max_height))
     x_offset = 0
@@ -258,7 +257,6 @@ def build_equip_visual(equip):
     buffer.seek(0)
 
     return buffer
-
 
 
 def build_player_info_embed(player, p_info, last_online, server_id):
