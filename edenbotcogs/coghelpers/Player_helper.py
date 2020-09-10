@@ -12,6 +12,7 @@ import ast
 from edenbotcogs.coghelpers.Timers_helper import get_timezone
 from PIL import Image
 from io import BytesIO
+from edenbotcogs.coghelpers.Market_helper import format_name
 import urllib.request
 
 char_url = 'http://classicffxi.com/api/v1/chars/'
@@ -144,6 +145,7 @@ avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.j
                tm2a='https://vignette.wikia.nocookie.net/ffxi/images/f/f0/Tm2a.jpg',
                tm1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d8/Tm1a.jpg')
 base_url = 'https://static.ffxiah.com/images/icon/'
+base_ah_url = 'http://www.classicffxi.com/tools/item/'
 equip_background = 'https://www.ffxiah.com/images/equip_box.gif'
 
 
@@ -216,12 +218,10 @@ def order_equip_ids(equip_ids):
     return ordered_ids
 
 
-def build_equip_visual(equip):
-    equip_ids = get_equip_ids(equip)
-    equip_ids = order_equip_ids(equip_ids)
+def build_equip_visual(ordered_ids):
 
     imgs = []
-    for equip_id in equip_ids:
+    for equip_id in ordered_ids:
         if not equip_id:
             imgs.append(0)
         url = base_url + str(equip_id) + '.png'
@@ -257,6 +257,27 @@ def build_equip_visual(equip):
     buffer.seek(0)
 
     return buffer
+
+
+def build_equip_embed(name):
+    equip = get_player_equip(name)
+    equip_ids = get_equip_ids(equip)
+    ordered_ids = order_equip_ids(equip_ids)
+    image = build_equip_visual(ordered_ids)
+
+    file = discord.File(fp=image, filename="player_equip.png")
+    equip_embed = discord.Embed()
+    equip_embed.set_image(url='attachment://player_equip.png')
+
+    for slot in equip:
+        if 'itemid' in equip[slot]:
+            name = equip[slot]["name"]
+            formatted_name = format_name(name)
+            equip_embed.add_field(name=slot, value=f'[{formatted_name}]({base_ah_url + name})')
+        elif 'ls' not in slot:
+            equip_embed.add_field(name=slot, value='None')
+
+    return equip_embed, file
 
 
 def build_player_info_embed(player, p_info, last_online, server_id):
