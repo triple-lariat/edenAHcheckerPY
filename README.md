@@ -1,6 +1,6 @@
 # edenAHcheckerPY
 Dependencies:
-discord.py, platform, logging, pickle, ast, re, pandas, pytz, math, time, datetime
+discord.py, platform, logging, pickle, ast, re, pandas, pytz, math, time, datetime, Pillow, aiohttp
 <br><br>
 This bot is designed to pull info from classicffxi.com and post it in a discord channel.<br>
 In other words, it's designed for Eden private server.<br><br>
