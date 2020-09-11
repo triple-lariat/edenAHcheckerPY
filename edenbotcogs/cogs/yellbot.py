@@ -48,13 +48,13 @@ class yell_log(commands.Cog):
     async def yellbot_task(self):
         await self.bot.wait_until_ready()
         try:
-            if check_channels_exist() and check_connection(yell_url):
+            if check_channels_exist() and await check_connection(yell_url):
                 print(f"[{get_my_timestamp_now()}] cycle started.")
                 channel_ids = get_yell_channels()
                 if self.log_yells:
                     log = open('eden_yell_log.txt', 'a')
 
-                yell_tuple = get_new_yells(self.yell_history)
+                yell_tuple = await get_new_yells(self.yell_history)
                 self.yell_history = yell_tuple[1]
                 for yell in yell_tuple[0]:
                     yell_message = yell_formatter(yell)

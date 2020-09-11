@@ -24,8 +24,8 @@ class Player(commands.Cog):
             Usage: !check [player]'''
         server_id = ctx.message.guild.id
         player_name = format_player_name(message)
-        if check_player_exist(player_name):
-            p_info = get_player_info(player_name)
+        if await check_player_exist(player_name):
+            p_info = await get_player_info(player_name)
             try:
                 last_online = self.most_recent_activity[format_name(player_name)]
                 last_online = get_readable_timestamp(last_online, server_id)
@@ -41,8 +41,8 @@ class Player(commands.Cog):
         '''Get a player's crafting levels.
             Usage: !crafts [player]'''
         player_name = format_player_name(message)
-        if check_player_exist(player_name):
-            crafts = get_player_crafts(player_name)
+        if await check_player_exist(player_name):
+            crafts = await get_player_crafts(player_name)
             await ctx.send(embed=build_crafts_embed(player_name, crafts))
         else:
             await ctx.send('Player not found.')
@@ -53,8 +53,8 @@ class Player(commands.Cog):
         '''Displays a player's equipment.
             Usage: !equip [player]'''
         player_name = format_player_name(name)
-        if check_player_exist(player_name):
-            embed = build_equip_embed(player_name)
+        if await check_player_exist(player_name):
+            embed = await build_equip_embed(player_name)
             await ctx.send(file=embed[1], embed=embed[0])
 
     @tasks.loop(seconds=1800)
@@ -68,7 +68,9 @@ class Player(commands.Cog):
         except FileNotFoundError:
             activity_dict = {}
 
-        current_online = r.get('http://www.classicffxi.com/api/v1/chars?online=true&limit=28000').text
+        async with aiohttp.ClientSession() as s:
+            async with s.get('http://www.classicffxi.com/api/v1/chars?online=true&limit=28000') as resp:
+                current_online = await resp.text()
         current_online = ast.literal_eval(current_online)['chars']
         log_time = int(time())
 

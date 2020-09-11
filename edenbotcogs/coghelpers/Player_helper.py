@@ -7,13 +7,12 @@ from datetime import datetime
 
 import discord.embeds
 import pytz
-import requests as r
 import ast
 from edenbotcogs.coghelpers.Timers_helper import get_timezone
 from PIL import Image
 from io import BytesIO
 from edenbotcogs.coghelpers.Market_helper import format_name
-import urllib.request
+import aiohttp
 
 char_url = 'http://classicffxi.com/api/v1/chars/'
 avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.jpg',
@@ -157,16 +156,21 @@ def format_name(name):
     return name.replace('_', ' ').title()
 
 
-def check_player_exist(player):
+async def check_player_exist(player):
     url = char_url + player
-    if r.get(url).text:
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            player_data = await resp.text()
+    if player_data:
         return True
     return False
 
 
-def get_player_info(player):
+async def get_player_info(player):
     url = char_url + player
-    p_info = r.get(url).text
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            p_info = await resp.text()
     p_info = ast.literal_eval(p_info)
     return p_info
 
@@ -184,16 +188,20 @@ def get_avatar_img(avatar_id):
     return avatars[avatar_id]
 
 
-def get_player_crafts(player):
+async def get_player_crafts(player):
     url = char_url + player + '/crafts'
-    craft_info = r.get(url).text
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            craft_info = await resp.text()
     craft_info = ast.literal_eval(craft_info)
     return craft_info
 
 
-def get_player_equip(player):
+async def get_player_equip(player):
     url = char_url + player + '/equip'
-    equip_info = r.get(url).text
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            equip_info = await resp.text()
     equip_info = ast.literal_eval(equip_info)
     return equip_info
 
@@ -218,14 +226,18 @@ def order_equip_ids(equip_ids):
     return ordered_ids
 
 
-def build_equip_visual(ordered_ids):
+async def build_equip_visual(ordered_ids):
 
     imgs = []
     for equip_id in ordered_ids:
         if not equip_id:
             imgs.append(0)
         url = base_url + str(equip_id) + '.png'
-        imgs.append(Image.open(urllib.request.urlopen(url)))
+        async with aiohttp.ClientSession() as s:
+            async with s.get(url) as resp:
+                img_bytes = await resp.read()
+        img_bytes = BytesIO(img_bytes)
+        imgs.append(Image.open(img_bytes))
     widths, heights = zip(*(i.size for i in imgs if i))
     total_width = max(widths) * 4
     max_height = max(heights) * 4
@@ -236,7 +248,11 @@ def build_equip_visual(ordered_ids):
     x_size = 32
     y_size = 32
     counter = 0
-    bg_img = Image.open(urllib.request.urlopen(equip_background))
+    async with aiohttp.ClientSession() as s:
+        async with s.get(equip_background) as resp:
+            img_bytes = await resp.read()
+    img_bytes = BytesIO(img_bytes)
+    bg_img = Image.open(img_bytes)
     for im in imgs:
         # background image needs to exist regardless of if the slot if full or not
         new_im.paste(bg_img, (x_offset, y_offset))
@@ -259,11 +275,11 @@ def build_equip_visual(ordered_ids):
     return buffer
 
 
-def build_equip_embed(name):
-    equip = get_player_equip(name)
+async def build_equip_embed(name):
+    equip = await get_player_equip(name)
     equip_ids = get_equip_ids(equip)
     ordered_ids = order_equip_ids(equip_ids)
-    image = build_equip_visual(ordered_ids)
+    image = await build_equip_visual(ordered_ids)
 
     file = discord.File(fp=image, filename="player_equip.png")
     equip_embed = discord.Embed()
