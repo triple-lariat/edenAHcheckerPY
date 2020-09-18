@@ -13,6 +13,7 @@ from PIL import Image
 from io import BytesIO
 from edenbotcogs.coghelpers.Market_helper import format_name
 import aiohttp
+from random import randint
 
 char_url = 'http://classicffxi.com/api/v1/chars/'
 avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.jpg',
@@ -227,7 +228,6 @@ def order_equip_ids(equip_ids):
 
 
 async def build_equip_visual(ordered_ids):
-
     imgs = []
     for equip_id in ordered_ids:
         if not equip_id:
@@ -276,13 +276,14 @@ async def build_equip_visual(ordered_ids):
 
 
 async def build_equip_embed(name):
+    color = randint(0, 0xFFFFFF)
     equip = await get_player_equip(name)
     equip_ids = get_equip_ids(equip)
     ordered_ids = order_equip_ids(equip_ids)
     image = await build_equip_visual(ordered_ids)
 
     file = discord.File(fp=image, filename="player_equip.png")
-    equip_embed = discord.Embed()
+    equip_embed = discord.Embed(title=format_name(name), color=color)
     equip_embed.set_image(url='attachment://player_equip.png')
 
     for slot in equip:
