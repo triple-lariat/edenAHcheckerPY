@@ -59,13 +59,6 @@ async def on_command_error(ctx, exception):
 async def ping(ctx):
     await ctx.send('pong')
 
-
-@bot.command(hidden=True)
-async def args(ctx, *, message: str):
-    message = message.split(' ')
-    for item in enumerate(message):
-        await ctx.send(message[item[0]])
-
 # add created cogs
 bot.add_cog(Check_settings.settings(bot))
 bot.add_cog(Player.Player(bot))
