@@ -6,7 +6,7 @@ from datetime import datetime
 import re
 import pandas as pd
 import pytz
-import requests as r
+import aiohttp
 import discord.embeds
 from edenbotcogs.coghelpers.Timers_helper import get_timezone, server_timezones
 
@@ -71,7 +71,7 @@ def get_timestamp(unix_ts, server_id=None):
     return human_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
-def check_item(item_name):
+async def check_item(item_name):
     # returns (name, stack_flag, additional_results)
     stack_flag = 'false'
 
@@ -82,7 +82,7 @@ def check_item(item_name):
         item_name = check_prefixes(item_name)
 
     if item_name:
-        stack_flag = check_stack_flag(item_name)
+        stack_flag = await check_stack_flag(item_name)
 
     return item_name, stack_flag, matches
 
@@ -98,9 +98,11 @@ def check_prefixes(item_stub):
     return ''
 
 
-def check_stack_flag(item_name):
+async def check_stack_flag(item_name):
     check_url = f'http://www.classicffxi.com/api/v1/items/{item_name}'
-    check_page = r.get(check_url).text
+    async with aiohttp.ClientSession() as s:
+        async with s.get(check_url) as resp:
+            check_page = await resp.text()
     is_stack = check_page.split(',')[1][11:]
     return is_stack
 
@@ -127,11 +129,14 @@ def condense(info_list):
     return df
 
 
-def build_AH_embed(item_name, stack_flag, server_id):
+async def build_AH_embed(item_name, stack_flag, server_id):
     embed_title = format_name(item_name)
 
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/ah?stack={stack_flag}'
-    ah_info = r.get(url).text
+
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            ah_info = await resp.text()
 
     if ah_info == '[]':
         return discord.Embed(title=embed_title, description='No entries found.')
@@ -150,11 +155,13 @@ def build_AH_embed(item_name, stack_flag, server_id):
     return embed
 
 
-def build_bazaar_embed(item_name):
+async def build_bazaar_embed(item_name):
     embed_title = format_name(item_name)
 
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/bazaar'
-    ah_info = r.get(url).text
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            ah_info = await resp.text()
 
     ah_info = ast.literal_eval(ah_info)
     b_info = []
