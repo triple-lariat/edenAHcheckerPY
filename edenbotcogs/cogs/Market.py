@@ -65,7 +65,7 @@ class Market(commands.Cog):
         item_name = separator.join(message)
 
         # check if the item given actually exists
-        item_info = check_item(item_name)
+        item_info = await check_item(item_name)
 
         item_name = item_info[0]
         additional_results = item_info[2]
