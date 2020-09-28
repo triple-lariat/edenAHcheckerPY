@@ -84,6 +84,6 @@ class Misc(commands.Cog):
 
     @check_channel(ID)
     @commands.command(hidden=True)
-    async def azmantailor(self, ctx):
+    async def azmanstailor(self, ctx):
         '''Just an easter egg~'''
         await ctx.send('Did you mean Tailorazman?')
