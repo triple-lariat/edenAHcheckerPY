@@ -57,6 +57,16 @@ class Player(commands.Cog):
             embed = await build_equip_embed(player_name)
             await ctx.send(file=embed[1], embed=embed[0])
 
+    @check_channel(ID)
+    @commands.command()
+    async def jobs(self, ctx, name: str):
+        player_name = format_player_name(name)
+        if await check_player_exist(player_name):
+            embed = await build_jobs_embed(player_name)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send('Player not found.')
+
     @tasks.loop(seconds=1800)
     async def track_activity(self):
         await self.bot.wait_until_ready()

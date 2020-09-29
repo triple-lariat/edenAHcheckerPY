@@ -198,6 +198,15 @@ async def get_player_crafts(player):
     return craft_info
 
 
+async def get_player_jobs(player):
+    url = char_url + player
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            p_info = await resp.text()
+    p_info = ast.literal_eval(p_info)
+    return p_info['jobs']
+
+
 async def get_player_equip(player):
     url = char_url + player + '/equip'
     async with aiohttp.ClientSession() as s:
@@ -325,6 +334,18 @@ def build_crafts_embed(player, craft_info):
         embed.add_field(name=craft, value=craft_info[craft])
     return embed
 
+
+async def build_jobs_embed(player):
+    color = randint(0, 0xFFFFFF)
+    jobs = await get_player_jobs(player)
+
+    embed = discord.Embed(title=format_name(player), color=color)
+
+    for job in jobs:
+        if jobs[job]:
+            embed.add_field(name=job, value=jobs[job], inline=True)
+
+    return embed
 
 def get_readable_timestamp(unix_ts, server_id):
     if server_id:
