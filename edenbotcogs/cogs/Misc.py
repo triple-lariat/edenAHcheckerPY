@@ -81,3 +81,15 @@ class Misc(commands.Cog):
             await ctx.send('Invalid level. Proper usage is !skillcaps [job] [level 1 through 75]')
         except IndexError:
             await ctx.send('Invalid job. Proper job names are "NIN", "COR", etc.')
+
+    @check_channel(ID)
+    @commands.command()
+    async def github(self, ctx, *, query: str):
+        args = query.split()
+        await ctx.send(get_git_link(args))
+
+    @check_channel(ID)
+    @commands.command(hidden=True)
+    async def azmanstailor(self, ctx):
+        '''Just an easter egg~'''
+        await ctx.send('Did you mean Tailorazman?')

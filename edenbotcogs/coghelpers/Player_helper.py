@@ -7,9 +7,14 @@ from datetime import datetime
 
 import discord.embeds
 import pytz
-import requests as r
 import ast
 from edenbotcogs.coghelpers.Timers_helper import get_timezone
+from PIL import Image
+from io import BytesIO
+from edenbotcogs.coghelpers.Market_helper import format_name
+import aiohttp
+from random import randint
+
 
 char_url = 'http://classicffxi.com/api/v1/chars/'
 avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.jpg',
@@ -140,6 +145,9 @@ avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.j
                tm3a='https://vignette.wikia.nocookie.net/ffxi/images/d/d9/Tm3a.jpg',
                tm2a='https://vignette.wikia.nocookie.net/ffxi/images/f/f0/Tm2a.jpg',
                tm1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d8/Tm1a.jpg')
+base_url = 'https://static.ffxiah.com/images/icon/'
+base_ah_url = 'http://www.classicffxi.com/tools/item/'
+equip_background = 'https://www.ffxiah.com/images/equip_box.gif'
 
 
 def format_player_name(name):
@@ -150,16 +158,21 @@ def format_name(name):
     return name.replace('_', ' ').title()
 
 
-def check_player_exist(player):
+async def check_player_exist(player):
     url = char_url + player
-    if r.get(url).text:
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            player_data = await resp.text()
+    if player_data:
         return True
     return False
 
 
-def get_player_info(player):
+async def get_player_info(player):
     url = char_url + player
-    p_info = r.get(url).text
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            p_info = await resp.text()
     p_info = ast.literal_eval(p_info)
     return p_info
 
@@ -177,11 +190,121 @@ def get_avatar_img(avatar_id):
     return avatars[avatar_id]
 
 
-def get_player_crafts(player):
+async def get_player_crafts(player):
     url = char_url + player + '/crafts'
-    craft_info = r.get(url).text
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            craft_info = await resp.text()
     craft_info = ast.literal_eval(craft_info)
     return craft_info
+
+
+async def get_player_jobs(player):
+    url = char_url + player
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            p_info = await resp.text()
+    p_info = ast.literal_eval(p_info)
+    return p_info['jobs']
+
+
+async def get_player_equip(player):
+    url = char_url + player + '/equip'
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as resp:
+            equip_info = await resp.text()
+    equip_info = ast.literal_eval(equip_info)
+    return equip_info
+
+
+def get_equip_ids(equip):
+    ids = []
+    for slot in equip:
+        if 'itemid' in equip[slot]:
+            ids.append(equip[slot]['itemid'])
+        else:
+            ids.append(0)
+    return ids
+
+
+def order_equip_ids(equip_ids):
+    # Order used for in-game equipment menu
+    order = (0, 1, 2, 3, 4, 9, 11, 12, 5, 6, 13, 14, 15, 10, 7, 8)
+    ordered_ids = []
+    for index in order:
+        ordered_ids.append(equip_ids[index])
+
+    return ordered_ids
+
+
+async def build_equip_visual(ordered_ids):
+    imgs = []
+    for equip_id in ordered_ids:
+        if not equip_id:
+            imgs.append(0)
+        url = base_url + str(equip_id) + '.png'
+        async with aiohttp.ClientSession() as s:
+            async with s.get(url) as resp:
+                img_bytes = await resp.read()
+        img_bytes = BytesIO(img_bytes)
+        imgs.append(Image.open(img_bytes))
+    widths, heights = zip(*(i.size for i in imgs if i))
+    total_width = max(widths) * 4
+    max_height = max(heights) * 4
+
+    new_im = Image.new('RGB', (total_width, max_height))
+    x_offset = 0
+    y_offset = 0
+    x_size = 32
+    y_size = 32
+    counter = 0
+    async with aiohttp.ClientSession() as s:
+        async with s.get(equip_background) as resp:
+            img_bytes = await resp.read()
+    img_bytes = BytesIO(img_bytes)
+    bg_img = Image.open(img_bytes)
+    for im in imgs:
+        # background image needs to exist regardless of if the slot if full or not
+        new_im.paste(bg_img, (x_offset, y_offset))
+
+        # only bother adding a top layer item image if an item is equipped
+        if im:
+            new_im.paste(im, (x_offset, y_offset), mask=im)
+            x_offset += x_size
+
+        # move down every 4 slots
+        counter += 1
+        if x_offset == x_size * 4:
+            y_offset += y_size
+            x_offset = 0
+
+    buffer = BytesIO()
+    new_im.save(buffer, 'png')
+    buffer.seek(0)
+
+    return buffer
+
+
+async def build_equip_embed(name):
+    color = randint(0, 0xFFFFFF)
+    equip = await get_player_equip(name)
+    equip_ids = get_equip_ids(equip)
+    ordered_ids = order_equip_ids(equip_ids)
+    image = await build_equip_visual(ordered_ids)
+
+    file = discord.File(fp=image, filename="player_equip.png")
+    equip_embed = discord.Embed(title=format_name(name), color=color)
+    equip_embed.set_image(url='attachment://player_equip.png')
+
+    for slot in equip:
+        if 'itemid' in equip[slot]:
+            name = equip[slot]["name"]
+            formatted_name = format_name(name)
+            equip_embed.add_field(name=slot, value=f'[{formatted_name}]({base_ah_url + name})')
+        elif 'ls' not in slot:
+            equip_embed.add_field(name=slot, value='None')
+
+    return equip_embed, file
 
 
 def build_player_info_embed(player, p_info, last_online, server_id):
@@ -210,6 +333,19 @@ def build_crafts_embed(player, craft_info):
     embed = discord.Embed(title=player)
     for craft in craft_info:
         embed.add_field(name=craft, value=craft_info[craft])
+    return embed
+
+
+async def build_jobs_embed(player):
+    color = randint(0, 0xFFFFFF)
+    jobs = await get_player_jobs(player)
+
+    embed = discord.Embed(title=format_name(player), color=color)
+
+    for job in jobs:
+        if jobs[job]:
+            embed.add_field(name=job, value=jobs[job], inline=True)
+
     return embed
 
 

@@ -50,3 +50,9 @@ class settings(commands.Cog):
     async def listdisabled(self, ctx):
         await ctx.send(disabled_channels)
 
+    @commands.command()
+    async def credit(self, ctx):
+        cred = "Hello! This bot was created by Tranquille/Triple Lariat/M.B.! You can find the source code at " + \
+               "https://github.com/triple-lariat/edenAHcheckerPY\n" + \
+               "Thank you so much for using this bot and I hope you enjoy!~"
+        await ctx.send(cred)

@@ -83,6 +83,8 @@ exp_tnl = {
     75: 44000
 }
 
+base_git_url = 'https://github.com/EdenServer/community/issues?q=is%3Aissue'
+
 
 def get_tnl(init_lv, target_lv):
     if init_lv not in exp_tnl or target_lv not in exp_tnl:
@@ -131,3 +133,10 @@ def build_skill_embed(job, level):
             embed.add_field(name=skill[0], value=skill[1])
 
     return embed
+
+
+def get_git_link(query):
+    url = base_git_url
+    for word in query:
+        url += '+' + word
+    return url

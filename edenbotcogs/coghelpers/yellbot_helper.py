@@ -2,18 +2,21 @@
 # Any issues you encounter can be posted to https://github.com/triple-lariat/edenAHcheckerPY
 # You may also find me on Eden or Eden's discord under the name Tranquille
 
-import urllib.request
 from datetime import datetime
 import pytz
-import requests as r
 import ast
+import re
+import aiohttp
 from edenbotcogs.coghelpers.Timers_helper import get_timezone, server_timezones
 
 yell_url = 'http://classicffxi.com/api/v1/misc/yells'
 
 
-def get_new_yells(yell_history):
-    yell_info = r.get(yell_url).text
+async def get_new_yells(yell_history):
+    async with aiohttp.ClientSession() as s:
+        async with s.get(yell_url) as resp:
+            yell_info = await resp.text()
+
     yell_info = ast.literal_eval(yell_info)
 
     displace = -1
@@ -32,9 +35,17 @@ def yell_formatter(yell, server_id=None):
     message = f_yell['message']
     # replace unparseable character if given by site
     message = message.replace('\x85', '')
+    message = escape_markdown(message)
     date = f_yell['date']
 
     return f'[{date}] **{name}**: {message}'
+
+
+# For now this only removes characters that Discord would think is formatting
+# In the long-term will want to find a way to escape special characters
+def escape_markdown(text):
+    escaped = re.sub(r'(\*|_|`|~|\||\\)', '', text)  # escape *, _, `, ~, \, |
+    return escaped
 
 
 def yell_date_formatter(yell, server_id=None):
@@ -91,11 +102,13 @@ def check_channels_exist():
     return True
 
 
-def check_connection(url):
+async def check_connection(url):
     valid_connection = False
     try:
-        if urllib.request.urlopen(url).getcode() == 200:
-            valid_connection = True
+        async with aiohttp.ClientSession() as s:
+            async with s.get(url) as resp:
+                if resp.status == 200:
+                    valid_connection = True
     except Exception:
         # something went horribly wrong and the url is probably invalid in some way
         pass

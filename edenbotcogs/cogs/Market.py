@@ -33,7 +33,7 @@ class Market(commands.Cog):
             item_name = separator.join(message)
 
         # check if the item given actually exists
-        item_info = check_item(item_name)
+        item_info = await check_item(item_name)
 
         item_name = item_info[0]
         additional_results = item_info[2]
@@ -42,7 +42,7 @@ class Market(commands.Cog):
             stack_flag = item_info[1]
 
         if item_name:
-            await ctx.send(embed=build_AH_embed(item_name, stack_flag, server_id))
+            await ctx.send(embed=await build_AH_embed(item_name, stack_flag, server_id))
         elif additional_results:
             await ctx.send('No results found, did you mean one of these items?\n')
             results = ''
@@ -65,13 +65,13 @@ class Market(commands.Cog):
         item_name = separator.join(message)
 
         # check if the item given actually exists
-        item_info = check_item(item_name)
+        item_info = await check_item(item_name)
 
         item_name = item_info[0]
         additional_results = item_info[2]
 
         if item_name:
-            await ctx.send(embed=build_bazaar_embed(item_name))
+            await ctx.send(embed=await build_bazaar_embed(item_name))
         elif additional_results:
             await ctx.send('No results found, did you mean one of these items?\n')
             results = ''
