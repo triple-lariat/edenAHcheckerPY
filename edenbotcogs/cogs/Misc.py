@@ -83,6 +83,12 @@ class Misc(commands.Cog):
             await ctx.send('Invalid job. Proper job names are "NIN", "COR", etc.')
 
     @check_channel(ID)
+    @commands.command()
+    async def github(self, ctx, *, query: str):
+        args = query.split()
+        await ctx.send(get_git_link(args))
+
+    @check_channel(ID)
     @commands.command(hidden=True)
     async def azmanstailor(self, ctx):
         '''Just an easter egg~'''
