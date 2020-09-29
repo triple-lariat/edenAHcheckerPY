@@ -130,6 +130,7 @@ def condense(info_list):
 
 
 async def build_AH_embed(item_name, stack_flag, server_id):
+
     embed_title = format_name(item_name)
 
     url = f'http://www.classicffxi.com/api/v1/items/{item_name}/ah?stack={stack_flag}'

@@ -15,6 +15,7 @@ from edenbotcogs.coghelpers.Market_helper import format_name
 import aiohttp
 from random import randint
 
+
 char_url = 'http://classicffxi.com/api/v1/chars/'
 avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.jpg',
                ef2a='https://vignette.wikia.nocookie.net/ffxi/images/c/c1/Ef2a.jpg',
@@ -346,6 +347,7 @@ async def build_jobs_embed(player):
             embed.add_field(name=job, value=jobs[job], inline=True)
 
     return embed
+
 
 def get_readable_timestamp(unix_ts, server_id):
     if server_id:
