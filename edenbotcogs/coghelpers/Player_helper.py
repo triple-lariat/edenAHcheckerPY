@@ -16,7 +16,7 @@ import aiohttp
 from random import randint
 
 
-char_url = 'http://classicffxi.com/api/v1/chars/'
+char_url = 'https://144.217.79.186/api/v1/chars/'
 avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.jpg',
                ef2a='https://vignette.wikia.nocookie.net/ffxi/images/c/c1/Ef2a.jpg',
                ef3a='https://vignette.wikia.nocookie.net/ffxi/images/a/a4/Ef3a.jpg',
@@ -146,7 +146,7 @@ avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.j
                tm2a='https://vignette.wikia.nocookie.net/ffxi/images/f/f0/Tm2a.jpg',
                tm1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d8/Tm1a.jpg')
 base_url = 'https://static.ffxiah.com/images/icon/'
-base_ah_url = 'http://www.classicffxi.com/tools/item/'
+base_ah_url = 'https://www.144.217.79.186/tools/item/'
 equip_background = 'https://www.ffxiah.com/images/equip_box.gif'
 
 
@@ -161,7 +161,7 @@ def format_name(name):
 async def check_player_exist(player):
     url = char_url + player
     async with aiohttp.ClientSession() as s:
-        async with s.get(url) as resp:
+        async with s.get(url, ssl=False) as resp:
             player_data = await resp.text()
     if player_data:
         return True
@@ -171,7 +171,7 @@ async def check_player_exist(player):
 async def get_player_info(player):
     url = char_url + player
     async with aiohttp.ClientSession() as s:
-        async with s.get(url) as resp:
+        async with s.get(url, ssl=False) as resp:
             p_info = await resp.text()
     p_info = ast.literal_eval(p_info)
     return p_info
@@ -193,7 +193,7 @@ def get_avatar_img(avatar_id):
 async def get_player_crafts(player):
     url = char_url + player + '/crafts'
     async with aiohttp.ClientSession() as s:
-        async with s.get(url) as resp:
+        async with s.get(url, ssl=False) as resp:
             craft_info = await resp.text()
     craft_info = ast.literal_eval(craft_info)
     return craft_info
@@ -202,7 +202,7 @@ async def get_player_crafts(player):
 async def get_player_jobs(player):
     url = char_url + player
     async with aiohttp.ClientSession() as s:
-        async with s.get(url) as resp:
+        async with s.get(url, ssl=False) as resp:
             p_info = await resp.text()
     p_info = ast.literal_eval(p_info)
     return p_info['jobs']
@@ -211,7 +211,7 @@ async def get_player_jobs(player):
 async def get_player_equip(player):
     url = char_url + player + '/equip'
     async with aiohttp.ClientSession() as s:
-        async with s.get(url) as resp:
+        async with s.get(url, ssl=False) as resp:
             equip_info = await resp.text()
     equip_info = ast.literal_eval(equip_info)
     return equip_info
@@ -244,7 +244,7 @@ async def build_equip_visual(ordered_ids):
             imgs.append(0)
         url = base_url + str(equip_id) + '.png'
         async with aiohttp.ClientSession() as s:
-            async with s.get(url) as resp:
+            async with s.get(url, ssl=False) as resp:
                 img_bytes = await resp.read()
         img_bytes = BytesIO(img_bytes)
         imgs.append(Image.open(img_bytes))
