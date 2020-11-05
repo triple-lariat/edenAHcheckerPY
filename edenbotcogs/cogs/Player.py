@@ -79,7 +79,7 @@ class Player(commands.Cog):
             activity_dict = {}
 
         async with aiohttp.ClientSession() as s:
-            async with s.get('http://www.classicffxi.com/api/v1/chars?online=true&limit=28000') as resp:
+            async with s.get('https://144.217.79.186/api/v1/chars?online=true&limit=28000') as resp:
                 current_online = await resp.text()
         current_online = ast.literal_eval(current_online)['chars']
         log_time = int(time())
