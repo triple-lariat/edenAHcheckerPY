@@ -99,9 +99,9 @@ def check_prefixes(item_stub):
 
 
 async def check_stack_flag(item_name):
-    check_url = f'http://www.classicffxi.com/api/v1/items/{item_name}'
+    check_url = f'https://144.217.79.186/api/v1/items/{item_name}'
     async with aiohttp.ClientSession() as s:
-        async with s.get(check_url) as resp:
+        async with s.get(check_url, ssl=False) as resp:
             check_page = await resp.text()
     is_stack = check_page.split(',')[1][11:]
     return is_stack
@@ -133,10 +133,10 @@ async def build_AH_embed(item_name, stack_flag, server_id):
 
     embed_title = format_name(item_name)
 
-    url = f'http://www.classicffxi.com/api/v1/items/{item_name}/ah?stack={stack_flag}'
+    url = f'https://144.217.79.186/api/v1/items/{item_name}/ah?stack={stack_flag}'
 
     async with aiohttp.ClientSession() as s:
-        async with s.get(url) as resp:
+        async with s.get(url, ssl=False) as resp:
             ah_info = await resp.text()
 
     if ah_info == '[]':
@@ -159,9 +159,9 @@ async def build_AH_embed(item_name, stack_flag, server_id):
 async def build_bazaar_embed(item_name):
     embed_title = format_name(item_name)
 
-    url = f'http://www.classicffxi.com/api/v1/items/{item_name}/bazaar'
+    url = f'https://144.217.79.186/api/v1/items/{item_name}/bazaar'
     async with aiohttp.ClientSession() as s:
-        async with s.get(url) as resp:
+        async with s.get(url, ssl=False) as resp:
             ah_info = await resp.text()
 
     ah_info = ast.literal_eval(ah_info)

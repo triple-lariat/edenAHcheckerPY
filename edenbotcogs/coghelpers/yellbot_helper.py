@@ -9,12 +9,12 @@ import re
 import aiohttp
 from edenbotcogs.coghelpers.Timers_helper import get_timezone, server_timezones
 
-yell_url = 'http://classicffxi.com/api/v1/misc/yells'
+yell_url = 'https://144.217.79.186/api/v1/misc/yells'
 
 
 async def get_new_yells(yell_history):
     async with aiohttp.ClientSession() as s:
-        async with s.get(yell_url) as resp:
+        async with s.get(yell_url, ssl=False) as resp:
             yell_info = await resp.text()
 
     yell_info = ast.literal_eval(yell_info)
@@ -106,7 +106,7 @@ async def check_connection(url):
     valid_connection = False
     try:
         async with aiohttp.ClientSession() as s:
-            async with s.get(url) as resp:
+            async with s.get(url, ssl=False) as resp:
                 if resp.status == 200:
                     valid_connection = True
     except Exception:
