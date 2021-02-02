@@ -12,3 +12,4 @@ wish to use that, you should comment out the line ```bot.add_cog(yellbot.yell_lo
 As of right now, I have only tested the bot with python3.7.4 and python3.6.8<br>
 it should, however, be able to work with python3.6.2+<br><br>
 
+Due to a lack of interest in the project, I'm not going to be actively working on it unless requested.
