@@ -147,6 +147,7 @@ avatars = dict(ef1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d7/Ef1a.j
                tm1a='https://vignette.wikia.nocookie.net/ffxi/images/d/d8/Tm1a.jpg')
 base_url = 'https://static.ffxiah.com/images/icon/'
 base_ah_url = 'https://www.144.217.79.186/tools/item/'
+user_ah_url = 'https://edenxi.com/tools/item/'
 equip_background = 'https://www.ffxiah.com/images/equip_box.gif'
 
 
@@ -300,7 +301,7 @@ async def build_equip_embed(name):
         if 'itemid' in equip[slot]:
             name = equip[slot]["name"]
             formatted_name = format_name(name)
-            equip_embed.add_field(name=slot, value=f'[{formatted_name}]({base_ah_url + name})')
+            equip_embed.add_field(name=slot, value=f'[{formatted_name}]({user_ah_url + name})')
         elif 'ls' not in slot:
             equip_embed.add_field(name=slot, value='None')
 
