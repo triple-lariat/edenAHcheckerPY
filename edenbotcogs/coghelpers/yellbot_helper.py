@@ -35,6 +35,7 @@ def yell_formatter(yell, server_id=None):
     message = f_yell['message']
     # replace unparseable character if given by site
     message = message.replace('\x85', '')
+    message = message.replace('@','(at)')
     message = escape_markdown(message)
     date = f_yell['date']
 
